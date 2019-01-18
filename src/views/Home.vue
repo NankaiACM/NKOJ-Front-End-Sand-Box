@@ -1,8 +1,8 @@
-<template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<template lang="pug">
+  transition(name="homeanimate", enter-active-class="animated tada", leave-active-class="animated bounceOutRight")
+    div.notification
+      button.delete
+      .home(ref="home")
 </template>
 
 <script>
@@ -11,8 +11,9 @@ import HelloWorld from '@/components/HelloWorld.vue';
 
 export default {
   name: 'home',
-  components: {
-    HelloWorld,
+  async mounted() {
+    const msg = await this.$http.aget('http://acm.nankai.edu.cn/api/contest/1001');
+    this.$refs.home.innerHTML = JSON.stringify(msg.data);
   },
 };
 </script>
