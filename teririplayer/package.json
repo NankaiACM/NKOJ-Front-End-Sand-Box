@@ -1,0 +1,21 @@
+{
+  "name": "teririplayer",
+  "version": "0.0.1",
+  "description": "a player",
+  "main": "''",
+  "scripts": {
+    "test": "''"
+  },
+  "keywords": [
+    "player"
+  ],
+  "author": "baitieyi",
+  "license": "ISC",
+  "devDependencies": {
+    "@vue/cli-service-global": "^3.2.1"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "video.js": "^7.3.0"
+  }
+}
