@@ -1,4 +1,3 @@
-import apost from './axios';
 import url from './url';
 
 const login = function loginWithPasswrodUserCaptcha(password, user, captcha) {
