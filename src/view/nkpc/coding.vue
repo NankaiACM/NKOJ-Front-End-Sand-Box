@@ -12,7 +12,7 @@
             img(:src="waifu")
         .media-content
           .content
-            strong {{annouce.title}} 
+            strong {{annouce.title}}
             small {{annouce.since}}
             p {{annouce.content}}
     .field.is-grouped
@@ -36,7 +36,7 @@
     .content#markdown-here(v-html="markdown")
 </template>
 <script>
-import {langMap} from '@/map/lang.js';
+import { langMap } from '@/map/lang.js';
 import markdownIt from 'markdown-it';
 import markdownItMathjax from 'markdown-it-mathjax';
 import markdownItLatex from 'markdown-it-latex';
@@ -46,14 +46,14 @@ const markdownit = markdownIt({
   html: true,
   linkify: true,
   typographer: true,
-})
+});
 markdownit.use(markdownItMathjax);
 markdownit.use(markdownItLatex);
 
 export default {
   name: 'nkpccodingpage',
   props: ['cid', 'pid'],
-  data () {
+  data() {
     return {
       annouce: {
         title: '通告获取中...',
@@ -68,44 +68,44 @@ export default {
       lang: 1,
       waifu: '',
       mypid: this.pid,
-    }
+    };
   },
   methods: {
-    thisWaifuDoseNotExist () {
-      return this.waifu = '//www.thiswaifudoesnotexist.net/example-' + Math.floor(Math.random() * 1e5) + '.jpg';
+    thisWaifuDoseNotExist() {
+      return this.waifu = `//www.thiswaifudoesnotexist.net/example-${Math.floor(Math.random() * 1e5)}.jpg`;
     },
-    async thisAnnouceExist () {
+    async thisAnnouceExist() {
       try {
         const res = await this.$http.api('announce');
         if (res[0]) {
           this.annouce = res[0];
         }
       } catch (e) {
-        this.$notify('获取通告失败：' + e.toString());
+        this.$notify(`获取通告失败：${e.toString()}`);
       }
     },
-    async thisContestExist () {
+    async thisContestExist() {
       try {
-        const res = await this.$http.api('contest', {cid: this.cid});
+        const res = await this.$http.api('contest', { cid: this.cid });
         this.contest = res;
         if (!this.pid) {
-          this.$router.push({name: 'coding', params: {cid: this.cid, pid: res.problems[0]['problem_id']}});
+          this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
         }
       } catch (e) {
-        this.$notify('获取比赛信息失败：' + e.toString());
+        this.$notify(`获取比赛信息失败：${e.toString()}`);
       }
     },
-    thisMarkMathjaxLatexExist (obj) {
+    thisMarkMathjaxLatexExist(obj) {
       let markdown = '';
-      for (let i in obj) {
-        markdown += '### ' + i.replace(/\b\w/g, l => l.toUpperCase()) + '\n' + obj[i] + '\n'
+      for (const i in obj) {
+        markdown += `### ${i.replace(/\b\w/g, l => l.toUpperCase())}\n${obj[i]}\n`;
       }
       return markdownit.render(markdown);
     },
-    async submit () {
+    async submit() {
       if (!this.codeok) return;
       try {
-        const res = await this.$http.objpost('judge','', {
+        const res = await this.$http.objpost('judge', '', {
           pid: this.pid * 1,
           lang: this.lang * 1,
           code: this.code,
@@ -115,22 +115,22 @@ export default {
         this.$notify('提交失败', e);
       }
     },
-    thisUrlDoseNotExist () {
+    thisUrlDoseNotExist() {
       if (!this.cid) {
-        this.$router.push({name: 'coding', params: {cid: 1001}});
+        this.$router.push({ name: 'coding', params: { cid: 1001 } });
       }
     },
-    async thisProblemExist () {
+    async thisProblemExist() {
       if (this.mypid !== this.pid) this.mypid = this.pid;
       try {
         if (!this.pid) throw new Error('无法获取题目id');
-        this.problem = await this.$http.api('problem', {pid: this.pid});
+        this.problem = await this.$http.api('problem', { pid: this.pid });
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
       } catch (e) {
-        this.$notify('获取题目失败：' + e.toString());
+        this.$notify(`获取题目失败：${e.toString()}`);
       }
     },
-    thisCodingPageDoseNotExist () {
+    thisCodingPageDoseNotExist() {
       this.thisUrlDoseNotExist();
       this.thisWaifuDoseNotExist();
       this.thisAnnouceExist();
@@ -138,7 +138,7 @@ export default {
       this.thisProblemExist();
     },
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       this.thisCodingPageDoseNotExist();
     });
@@ -147,14 +147,14 @@ export default {
     langMap: () => langMap,
   },
   watch: {
-    mypid (n, o) {
-      this.$router.push({name: 'coding', params: {cid: this.cid, pid: n}});
+    mypid(n, o) {
+      this.$router.push({ name: 'coding', params: { cid: this.cid, pid: n } });
     },
-    pid (n, o) {
+    pid(n, o) {
       this.thisProblemExist();
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
 .is-64o64 {
@@ -167,5 +167,3 @@ export default {
   height: 600px;
 }
 </style>
-
-

@@ -4,18 +4,18 @@
 <script>
 export default {
   name: 'helloworld',
-  data () {
+  data() {
     return {
     };
   },
-  async mounted () {
+  async mounted() {
     console.log('hello world');
     try {
-      console.log(await this.$http.arrapi('newproblem', [1,5]));
-      console.log(await this.$http.api('newproblem', {level: 1, count: 4}));
+      console.log(await this.$http.arrapi('newproblem', [1, 5]));
+      console.log(await this.$http.api('newproblem', { level: 1, count: 4 }));
     } catch (error) {
       console.log(error);
     }
-  }
-}
+  },
+};
 </script>

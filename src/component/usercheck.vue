@@ -9,7 +9,7 @@
           .content(v-else-if="userstatus === 3")
             progress.progress.is-danger(max="50")
             p
-              | 检查用户信息失败，请先前往 
+              | 检查用户信息失败，请先前往
               a.a.is-link.has-text-danger(href="http://acm.nankai.edu.cn",target="_blank") 主站
               |  注册 \ 登录。
               | 并刷新此页。
@@ -19,31 +19,31 @@
 <script>
 export default {
   name: 'usercheck',
-  data () {
+  data() {
     return {
       userstatus: 1,
       isclose: false,
     };
   },
   methods: {
-    async checkUser () {
+    async checkUser() {
       try {
         const user = await this.$http.api('user');
         this.userstatus = 2;
       } catch (e) {
-        this.$notify('获取用户信息失败：' + e.toString());
+        this.$notify(`获取用户信息失败：${e.toString()}`);
         this.userstatus = 3;
       }
       console.log(this.userstatus);
     },
-    close () {
+    close() {
       this.isclose = true;
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       this.checkUser();
     });
-  }
-}
+  },
+};
 </script>

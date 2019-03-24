@@ -12,9 +12,10 @@
 </template>
 <script>
 import velocity from 'velocity-animate';
+
 export default {
   name: 'activity',
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       velocity(this.$refs.title, {
         translateY: '50px',
@@ -40,28 +41,30 @@ export default {
       init();
     });
   },
-  beforeDestroy () {
+  beforeDestroy() {
     uninstall();
   },
 };
 
-var ref, ctx, reref, rectx, w, h;
+let ref; let ctx; let reref; let rectx; let w; let
+  h;
 
-var fps = 10, timed = [0, 0];
+const fps = 10; const
+  timed = [0, 0];
 
 const lr = [];
 
-function resize () {
+function resize() {
   w = ref.width = reref.width = window.innerWidth;
   h = ref.height = reref.height = window.innerHeight;
 }
 
-function uninstall () {
+function uninstall() {
   window.isplay = false;
   window.removeEventListener('resize', resize);
 }
 
-function init () {
+function init() {
   reref = document.querySelector('#canvas');
   rectx = reref.getContext('2d');
   ref = document.createElement('canvas');
@@ -70,21 +73,21 @@ function init () {
   window.addEventListener('resize', resize);
   window.ref = ref, window.ctx = ctx;
   for (let i = 0; i < 10; i++) {
-    lr.push({v: Math.random() + 1, x: 0, y: h / 3 * 2 + 141 * Math.random()});
+    lr.push({ v: Math.random() + 1, x: 0, y: h / 3 * 2 + 141 * Math.random() });
   }
   timed[0] = new Date().getTime();
   window.isplay = true;
   loop();
 }
 
-function clear () {
+function clear() {
   ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = 'rgba(54, 54, 54, 0.041)';
   ctx.fillRect(0, 0, w, h);
   ctx.globalCompositeOperation = 'lighter';
 }
 
-function loop () {
+function loop() {
   draw();
   // console.log('fps: ' + 1000 / (new Date().getTime() - timed[1]));
   timed[1] = new Date().getTime();
@@ -95,13 +98,13 @@ function loop () {
   // window.requestAnimationFrame(loop);
 }
 
-function draw () {
+function draw() {
   clear();
-  for (let i of lr) {
-    let clr = `rgba(${~~(i.v  - 1) * 155 + 100}, ${~~(i.x / w * 155) + 100}, ${~~(i.y / h * 255)}, 1)`;
+  for (const i of lr) {
+    const clr = `rgba(${~~(i.v - 1) * 155 + 100}, ${~~(i.x / w * 155) + 100}, ${~~(i.y / h * 255)}, 1)`;
     ctx.shadowColor = clr;
     ctx.shadowBlur = 5;
-    
+
     ctx.beginPath();
     ctx.strokeStyle = clr;
     ctx.lineWidth = 10;
@@ -111,13 +114,13 @@ function draw () {
     ctx.closePath();
 
     i.x += i.v * 5;
-    
+
     ctx.beginPath();
     ctx.fillStyle = clr;
     ctx.arc(~~i.x, ~~i.y, 5, Math.PI * 2, 0);
     ctx.fill();
     ctx.closePath();
-    
+
     if (i.x > w) {
       i.x = 0;
       i.v = Math.random() + 1;

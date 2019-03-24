@@ -9,19 +9,19 @@ export default {
   name: 'notificationUsingBulma',
   props: ['html'],
   methods: {
-    close () {
+    close() {
       this.$emit('close');
     },
-    closed () {
+    closed() {
       this.$emit('closed');
     },
   },
-  data () {
+  data() {
     return {
       show: false,
     };
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 .notify {
@@ -30,5 +30,3 @@ export default {
   bottom: 1em;
 }
 </style>
-
-

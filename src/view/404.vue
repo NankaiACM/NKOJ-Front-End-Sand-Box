@@ -4,8 +4,8 @@
 
 <script>
 export default {
-  name: 'recycler'
-}
+  name: 'recycler',
+};
 </script>
 
 <style lang="scss" scoped>

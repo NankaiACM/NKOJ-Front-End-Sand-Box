@@ -50,7 +50,7 @@
 <script>
 export default {
   name: 'nkpcregisterpage',
-  data () {
+  data() {
     return {
       fullname: '',
       studentid: '',
@@ -60,34 +60,34 @@ export default {
       email: '',
       political: '',
       phone: '',
-      userstatus: 1
+      userstatus: 1,
     };
   },
   computed: {
-    idok () {
+    idok() {
       return /^\d+$/.test(this.studentid);
     },
-    nameok () {
+    nameok() {
       return this.fullname.length > 1;
     },
-    emailok () {
+    emailok() {
       return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(this.email);
     },
-    qqok () {
+    qqok() {
       return /^\d{5,13}$/.test(this.qq);
     },
-    phoneok () {
+    phoneok() {
       return /^\d{11}$/.test(this.phone);
-    }
+    },
   },
   methods: {
-    async submit () {
+    async submit() {
       if (!this.idok || !this.nameok || !this.qqok || !this.phoneok) {
         this.$notify('似乎有什么地方不太对，请检查一下下数据 QwQ');
         return;
       }
       try {
-        const res = await this.$http.objpost('contestsign','', {
+        const res = await this.$http.objpost('contestsign', '', {
           gender: this.gender,
           institute: this.college,
           phone: this.phone,
@@ -96,18 +96,18 @@ export default {
           student_number: this.studentid,
         });
         console.log(res);
-        this.$notify('注册成功，这是你的注册信息：<br><pre>' + JSON.stringify(res, null, 2) + '</pre>');
-      } catch(e) {
+        this.$notify(`注册成功，这是你的注册信息：<br><pre>${JSON.stringify(res, null, 2)}</pre>`);
+      } catch (e) {
         this.$notify('注册失败', e);
         console.dir(e);
       }
     },
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
     });
   },
-}
+};
 </script>
 <style lang="scss" scoped>
 #register {
@@ -118,6 +118,3 @@ export default {
   background: none;
 }
 </style>
-
-
-
