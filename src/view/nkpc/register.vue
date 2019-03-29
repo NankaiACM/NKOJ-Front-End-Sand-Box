@@ -14,10 +14,10 @@
       label.label 性别
       .control
         .select
-          select
-            option 女
-            option 男
-            option 其他
+          select(v-model="gender")
+            option(value=1) 女
+            option(value=2) 男
+            option(value=3) 其他
     .field
       label.label 学院
       .control

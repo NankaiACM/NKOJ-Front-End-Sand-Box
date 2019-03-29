@@ -1,14 +1,14 @@
 import 'isomorphic-fetch';
 
 export default function requestBuildOnIsomorphicBuildOnWhatwg(url, options = {}) {
-  const controller = new AbortController();
-  const timeout = setTimeout(
-    () => { controller.abort(); },
-    options.timeout || 6000,
-  );
+  // const controller = new AbortController();
+  // const timeout = setTimeout(
+  //   () => { controller.abort(); },
+  //   options.timeout || 6000,
+  // );
   const defaultOptions = {
     credentials: 'include',
-    signal: controller.signal,
+    // signal: controller.signal,
   };
   const newOptions = {
     ...defaultOptions,
@@ -52,7 +52,7 @@ export default function requestBuildOnIsomorphicBuildOnWhatwg(url, options = {})
     .catch((e) => {
       throw e;
     })
-    .finally(() => {
-      clearTimeout(timeout);
-    });
+    // .finally(() => {
+    //   clearTimeout(timeout);
+    // });
 }
