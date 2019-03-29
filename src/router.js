@@ -42,6 +42,10 @@ const router = new Router({
       props: true,
     },
     {
+      path: '/coding',
+      component: coding,
+    },
+    {
       path: '/activity',
       component: activity,
     },

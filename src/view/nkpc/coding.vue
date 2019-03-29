@@ -1,29 +1,37 @@
 <template lang="pug">
   #coding.container.is-fullhd
-    .box
-      user-check(ref="usercheck")
-        template(v-slot:userok)
-          .level
-            .level-left 检查用户状态成功。
-            .level-right.a.button.is-primary.is-right(@click="$refs.usercheck.close()") 关闭
+    .box.has-height-animate
+      div.block.has-height-animate(ref="anbox")
+        user-check(ref="usercheck")
+          template(v-slot:userok)
+            .level
+              .level-left 检查用户状态成功。
+              .level-right.a.button.is-primary.is-right(@click="$refs.usercheck.close(),$refs.anbox.style.maxHeight='0px',$refs.anbox.style.margin='0'") 关闭
       article.media
         .media-left
           figure.img.is-64o64
-            img(:src="waifu")
+            img.is-loading(:src="waifu")
         .media-content
           .content
             strong {{annouce.title}}
             small {{annouce.since}}
             p {{annouce.content}}
     article.message(:class="submitted.length === 0 ? 'is-warning' : 'is-success'")
-      .message-body 您已提交：
-        span.submitted(v-if="submitted.length === 0") 暂无
-        span.submitted(v-for="p in submitted" :key="p") {{p}}
+      .message-body
+        .media
+          span.media-left 您已提交：
+          .media-right.tags
+              span.submitted(v-if="submitted.length === 0") 暂无
+              span.tag.is-success.submitted(v-for="p in submitted",:key="p") {{' ' + p + ' '}}
     .field.is-grouped
       .control
         .select
-          select(v-model="mypid")
-            option(v-for="(it,index,key) in contest.problems",:value="it['problem_id']",:key="index") [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
+          select(v-model="mypid",@change="ch()")
+            option(
+              v-for="(it,index,key) in contest.problems",
+              :value="it['problem_id']",:key="index",
+              :class="~submitted.indexOf(it['problem_id']) ? 'has-background-warning has-text-grey-dark' : ''"
+              ) [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
       .control
         .select
           select(v-model="lang")
@@ -33,11 +41,42 @@
       transition(enter-active-class="animated bounceInRight",leave-active-class="animated bounceOutRight")
         .control(v-if="codeok")
           button.button.is-warning(@click="submit()") 提交
-    transition(enter-active-class="animated bounceInUp",leave-active-class="animated bounceOutDown")
-      .field(v-if="codeok")
-        .control
+    .field.has-height-animate(:class="codeok ? 'has-height-600px' : 'has-height-0px'")
+      transition(enter-active-class="animated bounceInUp",leave-active-class="animated fadeOutDown")
+        .control(v-if="codeok")
           textarea.textarea.is-primary#code(v-model="code")
+    table.table.is-fullwidth.is-text-center
+      thead
+        tr
+          th.has-text-primary cases
+          th.has-text-danger time
+          th.has-text-danger memory
+          th special judge
+          th detail judge
+          th level
+          th ac
+          th all submit
+      tbody
+        tr
+          td.has-text-primary {{problem['cases']}}
+          td.has-text-danger {{problem['time_limit']}} ms
+          td.has-text-danger {{problem['memory_limit'] / 1024 > 64 ? (problem['memory_limit'] / 1024) + ' MB' : problem['memory_limit'] + ' KB' }}
+          td
+            .level
+              .tags.has-addons.level-item
+                .tag spj
+                .tag(:class="problem['special_judge'] ? 'is-danger' :'is-primary'") {{Boolean(problem['special_judge'])}}
+          td
+            .level
+              .tags.has-addons.level-item
+                .tag dtj
+                .tag(:class="problem['detail_judge'] ? 'is-danger' : 'is-primary'") {{problem['detail_judge']}}
+          td(title="这是假的，还是看题目排序吧") {{problem['level']}}
+          td {{problem['ac']}}
+          td {{problem['all']}}
     .content#markdown-here(v-html="markdown")
+    .tags(v-for="(item, index) in problem.tags")
+      span.tag.is-success.is-medium {{item.name}}
 </template>
 <script>
 import { langMap } from '@/map/lang.js';
@@ -75,6 +114,9 @@ export default {
       lang: 1,
       waifu: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAM1BMVEXMzMzKysqWlpbExMS7u7vHx8eysrKampqdnZ2ZmZnCwsKoqKi2trakpKShoaG+vr6srKxM8yeWAAAA/UlEQVR42u3Su46FMAxFUdvkDQH+/2vHIcVcUYw0RYor7VVwTFzYgggAAAAAAAAAAAAA4L90PqPnm84zby1RbRPRbl09ihV9tSTVcnncVj0WiGNKyLEEj7pZeLXUwr0/0T0W0DHlOOVMIqFIDn7UpOlsjS1iOkfd7oULqKpdIltNNYq0nPL20dpvf+l7OWSFMcUdWb3utXtIsvTRinY9Z7nJCnOKljEyZC1hfIEjt98F0vnU17pfMEfLvAqHZ5T4sVsNMq9ClxXmjy5JVeTKW27v3dKp6lHCfssCc0ows8Pr3XZ971bN+nNJzibr6V8tAAAAAAAAAAAAAMBX+QEytwU/4NOHhQAAAABJRU5ErkJggg==',
       mypid: this.pid,
+      oldpid: this.pid,
+      whatineed: ['cases', 'time_limit'],
+      tags: ['detail_judge', 'special_judge'],
     };
   },
   methods: {
@@ -106,12 +148,14 @@ export default {
         }
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
+          return false;
         }
         const submitted = await this.$http.api('submitted', {cid: this.cid})
         this.submitted = submitted;
       } catch (e) {
         this.$notify(`获取比赛信息失败：${e.toString()}`);
       }
+      return true;
     },
     thisMarkMathjaxLatexExist(obj) {
       let markdown = '';
@@ -136,26 +180,39 @@ export default {
     },
     thisUrlDoseNotExist() {
       if (!this.cid) {
-        this.$router.push({ name: 'coding', params: { cid: 1001 } });
+        this.$router.push({ name: 'coding', params: { cid: 1015 } });
+        return false;
       }
+      return true;
     },
     async thisProblemExist() {
-      if (this.mypid !== this.pid) this.mypid = this.pid;
+      let newpid = this.pid;
+      if (this.mypid !== newpid) this.mypid = newpid;
       try {
-        if (!this.pid) throw new Error('无法获取题目id');
-        this.problem = await this.$http.api('problem', { pid: this.pid });
+        if (!newpid) throw new Error('无法获取题目id');
+        this.problem = await this.$http.api('problem', { pid: newpid });
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
+        console.log(this.problem)
       } catch (e) {
         this.$notify(`获取题目失败：${e.toString()}`);
       }
     },
-    thisCodingPageDoseNotExist() {
-      this.thisUrlDoseNotExist();
+    async thisCodingPageDoseNotExist() {
+      if(!this.thisUrlDoseNotExist()) return false;
       this.thisWaifuDoseNotExist();
-      this.thisAnnouceExist();
-      this.thisContestExist();
+      await this.thisAnnouceExist();
+      if(!(await this.thisContestExist())) return false;
       this.thisProblemExist();
     },
+    ch () {
+      console.log(document.readyState);
+      if (document.readyState !== 'complete') {
+        this.$notify('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
+        this.mypid = this.oldpid;
+        return;
+      }
+      this.$router.push({ name: 'coding', params: { cid: this.cid, pid: this.mypid } });
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -167,7 +224,7 @@ export default {
   },
   watch: {
     mypid(n, o) {
-      this.$router.push({ name: 'coding', params: { cid: this.cid, pid: n } });
+      this.oldpid = o;
     },
     pid(n, o) {
       this.thisProblemExist();
@@ -176,6 +233,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.is-text-center {
+  & th, & td{
+    vertical-align: middle !important;
+    text-align: center !important;
+    align-items: center !important;
+    align-content: center !important;
+  }
+}
 .is-64o64 {
   width: 64px;
   height: 64px;
@@ -183,9 +248,19 @@ export default {
   overflow: hidden;
 }
 #code {
-  height: 600px;
+  @extend .has-height-600px;
 }
 #markdown-here {
   color: black;
+}
+.has-height-animate {
+  transition: height 1s,max-height 1s;
+  max-height: 1410px;
+}
+.has-height-600px {
+  height: 600px;
+}
+.has-height-0px {
+  height: 0px !important;
 }
 </style>
