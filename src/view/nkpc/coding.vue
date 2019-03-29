@@ -129,7 +129,7 @@ export default {
           code: this.code,
         });
         this.$notify('提交成功');
-        codeok = false;
+        this.codeok = false;
       } catch (e) {
         this.$notify('提交失败', e);
       }
