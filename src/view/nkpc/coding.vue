@@ -6,7 +6,10 @@
           template(v-slot:userok)
             .level
               .level-left 检查用户状态成功。
-              .level-right.a.button.is-primary.is-right(@click="$refs.usercheck.close(),$refs.anbox.style.maxHeight='0px',$refs.anbox.style.margin='0'") 关闭
+              .level-right.a.button.is-primary.is-right(@click="$refs.usercheck.close(),\
+                $refs.anbox.style.maxHeight='0px',\
+                $refs.anbox.style.margin='0'"
+                ) 关闭
       article.media
         .media-left
           figure.img.is-64o64
@@ -30,7 +33,8 @@
             option(
               v-for="(it,index,key) in contest.problems",
               :value="it['problem_id']",:key="index",
-              :class="~submitted.indexOf(it['problem_id']) ? 'has-background-warning has-text-grey-dark' : ''"
+              :class="~submitted.indexOf(it['problem_id']) ?\
+                'has-background-warning has-text-grey-dark' : ''"
               ) [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
       .control
         .select
@@ -120,8 +124,8 @@ export default {
     };
   },
   methods: {
-    getIndex (i) {
-      return String.fromCharCode(65 + i)
+    getIndex(i) {
+      return String.fromCharCode(65 + i);
     },
     thisWaifuDoseNotExist() {
       return this.waifu = `//www.thiswaifudoesnotexist.net/example-${Math.floor(Math.random() * 1e5)}.jpg`;
@@ -141,16 +145,14 @@ export default {
         const res = await this.$http.api('contest', { cid: this.cid });
         this.contest = res;
         if (pidorders[this.cid]) {
-          let mp = pidorders[this.cid]
-          this.contest.problems = this.contest.problems.sort((a, b) => {
-            return (mp[a['problem_id']].charCodeAt() || 0) - (mp[b['problem_id']].charCodeAt() || 0)
-          });
+          const mp = pidorders[this.cid];
+          this.contest.problems = this.contest.problems.sort((a, b) => (mp[a.problem_id].charCodeAt() || 0) - (mp[b.problem_id].charCodeAt() || 0));
         }
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
           return false;
         }
-        const submitted = await this.$http.api('submitted', {cid: this.cid})
+        const submitted = await this.$http.api('submitted', { cid: this.cid });
         this.submitted = submitted;
       } catch (e) {
         this.$notify(`获取比赛信息失败：${e.toString()}`);
@@ -186,25 +188,25 @@ export default {
       return true;
     },
     async thisProblemExist() {
-      let newpid = this.pid;
+      const newpid = this.pid;
       if (this.mypid !== newpid) this.mypid = newpid;
       try {
         if (!newpid) throw new Error('无法获取题目id');
         this.problem = await this.$http.api('problem', { pid: newpid });
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
-        console.log(this.problem)
+        console.log(this.problem);
       } catch (e) {
         this.$notify(`获取题目失败：${e.toString()}`);
       }
     },
     async thisCodingPageDoseNotExist() {
-      if(!this.thisUrlDoseNotExist()) return false;
+      if (!this.thisUrlDoseNotExist()) return false;
       this.thisWaifuDoseNotExist();
       await this.thisAnnouceExist();
-      if(!(await this.thisContestExist())) return false;
+      if (!(await this.thisContestExist())) return false;
       this.thisProblemExist();
     },
-    ch () {
+    ch() {
       console.log(document.readyState);
       if (document.readyState !== 'complete') {
         this.$notify('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
@@ -212,7 +214,7 @@ export default {
         return;
       }
       this.$router.push({ name: 'coding', params: { cid: this.cid, pid: this.mypid } });
-    }
+    },
   },
   mounted() {
     this.$nextTick(() => {

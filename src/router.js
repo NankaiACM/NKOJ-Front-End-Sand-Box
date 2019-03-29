@@ -5,7 +5,7 @@ import { objapi } from './fetch/main';
 import backCheck from './lib/backcheck';
 import frontCheck from './lib/frontcheck';
 
-import home from './view/home.vue';
+// import home from './view/home.vue';
 import register from './view/nkpc/register.vue';
 import coding from './view/nkpc/coding.vue';
 import activity from './view/nkpc/activity.vue';
