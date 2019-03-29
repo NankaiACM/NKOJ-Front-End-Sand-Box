@@ -37,6 +37,10 @@ const contest = {
   contest: '/contest/{cid}/',
 };
 
-const url = Object.assign(home, problem, status, vedio, user, contest);
+const submitted = {
+  submitted: '/contest/{cid}/own_submitted',
+};
+
+const url = Object.assign(home, problem, status, vedio, user, contest, submitted);
 
 export default url;

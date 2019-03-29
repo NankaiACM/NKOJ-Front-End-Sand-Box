@@ -15,6 +15,10 @@
             strong {{annouce.title}}
             small {{annouce.since}}
             p {{annouce.content}}
+    article.message(:class="submitted.length === 0 ? 'is-warning' : 'is-success'")
+      .message-body 您已提交：
+        span.submitted(v-if="submitted.length === 0") 暂无
+        span.submitted(v-for="p in submitted" :key="p") {{p}}
     .field.is-grouped
       .control
         .select
@@ -65,10 +69,11 @@ export default {
       contest: {},
       markdown: '',
       problem: {},
+      submitted: [],
       codeok: false,
       code: '',
       lang: 1,
-      waifu: '',
+      waifu: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAM1BMVEXMzMzKysqWlpbExMS7u7vHx8eysrKampqdnZ2ZmZnCwsKoqKi2trakpKShoaG+vr6srKxM8yeWAAAA/UlEQVR42u3Su46FMAxFUdvkDQH+/2vHIcVcUYw0RYor7VVwTFzYgggAAAAAAAAAAAAA4L90PqPnm84zby1RbRPRbl09ihV9tSTVcnncVj0WiGNKyLEEj7pZeLXUwr0/0T0W0DHlOOVMIqFIDn7UpOlsjS1iOkfd7oULqKpdIltNNYq0nPL20dpvf+l7OWSFMcUdWb3utXtIsvTRinY9Z7nJCnOKljEyZC1hfIEjt98F0vnU17pfMEfLvAqHZ5T4sVsNMq9ClxXmjy5JVeTKW27v3dKp6lHCfssCc0ows8Pr3XZ971bN+nNJzibr6V8tAAAAAAAAAAAAAMBX+QEytwU/4NOHhQAAAABJRU5ErkJggg==',
       mypid: this.pid,
     };
   },
@@ -102,6 +107,8 @@ export default {
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
         }
+        const submitted = await this.$http.api('submitted', {cid: this.cid})
+        this.submitted = submitted;
       } catch (e) {
         this.$notify(`获取比赛信息失败：${e.toString()}`);
       }
@@ -122,6 +129,7 @@ export default {
           code: this.code,
         });
         this.$notify('提交成功');
+        codeok = false;
       } catch (e) {
         this.$notify('提交失败', e);
       }
@@ -176,5 +184,8 @@ export default {
 }
 #code {
   height: 600px;
+}
+#markdown-here {
+  color: black;
 }
 </style>
