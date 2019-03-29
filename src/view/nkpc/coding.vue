@@ -19,7 +19,7 @@
       .control
         .select
           select(v-model="mypid")
-            option(v-for="(it,index,key) in contest.problems",:value="it['problem_id']") {{key}} {{it['problem_id']}} : {{it.title}}
+            option(v-for="(it,index,key) in contest.problems",:value="it['problem_id']",:key="index") [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
       .control
         .select
           select(v-model="lang")
@@ -41,6 +41,8 @@ import markdownIt from 'markdown-it';
 import markdownItMathjax from 'markdown-it-mathjax';
 import markdownItLatex from 'markdown-it-latex';
 import 'markdown-it-latex/dist/index.css';
+
+import pidorders from '../../map/pidorder.js';
 
 const markdownit = markdownIt({
   html: true,
@@ -71,6 +73,9 @@ export default {
     };
   },
   methods: {
+    getIndex (i) {
+      return String.fromCharCode(65 + i)
+    },
     thisWaifuDoseNotExist() {
       return this.waifu = `//www.thiswaifudoesnotexist.net/example-${Math.floor(Math.random() * 1e5)}.jpg`;
     },
@@ -88,6 +93,12 @@ export default {
       try {
         const res = await this.$http.api('contest', { cid: this.cid });
         this.contest = res;
+        if (pidorders[this.cid]) {
+          let mp = pidorders[this.cid]
+          this.contest.problems = this.contest.problems.sort((a, b) => {
+            return (mp[a['problem_id']].charCodeAt() || 0) - (mp[b['problem_id']].charCodeAt() || 0)
+          });
+        }
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
         }
