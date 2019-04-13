@@ -196,7 +196,7 @@ export default {
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
         console.log(this.problem);
       } catch (e) {
-        this.$notify(`获取题目失败`, e);
+        this.$notify('获取题目失败', e);
       }
     },
     async thisCodingPageDoseNotExist() {
