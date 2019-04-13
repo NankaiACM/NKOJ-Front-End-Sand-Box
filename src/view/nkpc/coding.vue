@@ -137,12 +137,13 @@ export default {
           this.annouce = res[0];
         }
       } catch (e) {
-        this.$notify(`获取通告失败：${e.toString()}`);
+        this.$notify('获取通告失败', e);
       }
     },
     async thisContestExist() {
       try {
         const res = await this.$http.api('contest', { cid: this.cid });
+        console.log(res);
         this.contest = res;
         if (pidorders[this.cid]) {
           const mp = pidorders[this.cid];
@@ -150,12 +151,11 @@ export default {
         }
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
-          return false;
         }
         const submitted = await this.$http.api('submitted', { cid: this.cid });
         this.submitted = submitted;
       } catch (e) {
-        this.$notify(`获取比赛信息失败：${e.toString()}`);
+        this.$notify('获取比赛信息失败', e);
       }
       return true;
     },
@@ -196,7 +196,7 @@ export default {
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
         console.log(this.problem);
       } catch (e) {
-        this.$notify(`获取题目失败：${e.toString()}`);
+        this.$notify(`获取题目失败`, e);
       }
     },
     async thisCodingPageDoseNotExist() {

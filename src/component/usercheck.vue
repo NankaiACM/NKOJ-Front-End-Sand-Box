@@ -31,7 +31,7 @@ export default {
         const user = await this.$http.api('user');
         this.userstatus = 2;
       } catch (e) {
-        this.$notify(`获取用户信息失败：${e.toString()}`);
+        this.$notify('获取用户信息失败', e);
         this.userstatus = 3;
       }
       console.log(this.userstatus);
