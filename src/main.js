@@ -6,15 +6,15 @@ import './registerServiceWorker';
 
 // import './api/axios';
 
-import notify from './component/notify/main';
-import userCheck from './component/usercheck.vue';
+import message from './component/message/main';
+import userCheck from './component/usercheck/usercheck.vue';
 
-import App from './App.vue';
+import App from './app.vue';
 
 Vue.config.productionTip = false;
 
 Vue.use(bulma);
-Vue.use(notify);
+Vue.use(message);
 
 Vue.component('user-check', userCheck);
 
@@ -24,42 +24,4 @@ const SAN = new Vue({
   render: h => h(App),
   router,
   store,
-  data: {
-    messageID: 0,
-    messages: [],
-  },
-  mounted() {
-    window.addEventListener('message', (e) => {
-      const { data } = e;
-      switch (data.type) {
-        case 'notice':
-          this.pushMessage(data.payload);
-          break;
-        case 'event':
-          break;
-        case 'login':
-          break;
-        default:
-          break;
-      }
-    });
-  },
-  methods: {
-    pushMessage({ title, content, type }) {
-      this.messages.push({
-        id: this.messageID += 1,
-        title,
-        content,
-        type,
-      });
-    },
-    deleteMessage(id) {
-      for (let i = 0; i < this.messages.length; i += 1) {
-        if (this.messages[i].id === id) {
-          this.messages.splice(i, 1);
-          return;
-        }
-      }
-    },
-  },
 });

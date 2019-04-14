@@ -137,13 +137,12 @@ export default {
           this.annouce = res[0];
         }
       } catch (e) {
-        this.$notify('获取通告失败', e);
+        this.$message('获取通告失败', e);
       }
     },
     async thisContestExist() {
       try {
         const res = await this.$http.api('contest', { cid: this.cid });
-        console.log(res);
         this.contest = res;
         if (pidorders[this.cid]) {
           const mp = pidorders[this.cid];
@@ -155,7 +154,7 @@ export default {
         const submitted = await this.$http.api('submitted', { cid: this.cid });
         this.submitted = submitted;
       } catch (e) {
-        this.$notify('获取比赛信息失败', e);
+        this.$message('获取比赛信息失败', e);
       }
       return true;
     },
@@ -174,10 +173,10 @@ export default {
           lang: this.lang * 1,
           code: this.code,
         });
-        this.$notify('提交成功');
+        this.$message('提交成功');
         this.codeok = false;
       } catch (e) {
-        this.$notify('提交失败', e);
+        this.$message('提交失败', e);
       }
     },
     thisUrlDoseNotExist() {
@@ -194,9 +193,8 @@ export default {
         if (!newpid) throw new Error('无法获取题目id');
         this.problem = await this.$http.api('problem', { pid: newpid });
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
-        console.log(this.problem);
       } catch (e) {
-        this.$notify('获取题目失败', e);
+        this.$message('获取题目失败', e);
       }
     },
     async thisCodingPageDoseNotExist() {
@@ -209,7 +207,7 @@ export default {
     ch() {
       console.log(document.readyState);
       if (document.readyState !== 'complete') {
-        this.$notify('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
+        this.$message('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
         this.mypid = this.oldpid;
         return;
       }

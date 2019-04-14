@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "chrome": "opn http://localhost:8080 -- chrome --disable-web-security --user-data-dir=%TEMP%"
@@ -16,7 +16,6 @@
     "markdown-it": "^8.4.2",
     "markdown-it-latex": "^0.2.0",
     "markdown-it-mathjax": "^2.0.0",
-    "raw-loader": "^2.0.0",
     "register-service-worker": "^1.6.2",
     "string-format": "^2.0.0",
     "velocity-animate": "^1.5.2",
@@ -24,8 +23,7 @@
     "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.6.10",
-    "vuex": "^3.1.0",
-    "webpack": "^4.30.0"
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",

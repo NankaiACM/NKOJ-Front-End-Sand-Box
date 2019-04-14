@@ -4,7 +4,9 @@ import arrurl from '../map/array_format_url';
 import objurl from '../map/obj_format_url';
 import request from './requerst';
 
-const baseURL = `${document.location.origin}/api`;
+let baseURL = `${document.location.origin}/api`;
+if (process.env.NODE_ENV === 'development') baseURL = 'http://acm.nankai.edu.cn/api';
+
 const aget = async function AwaitHttpGet(api) {
   const res = await request(baseURL + api);
   if (res.code !== 0) {

@@ -83,7 +83,7 @@ export default {
   methods: {
     async submit() {
       if (!this.idok || !this.nameok || !this.qqok || !this.phoneok) {
-        this.$notify('似乎有什么地方不太对，请检查一下下数据 QwQ');
+        this.$message('似乎有什么地方不太对，请检查一下下数据 QwQ');
         return;
       }
       try {
@@ -95,10 +95,9 @@ export default {
           real_name: this.fullname,
           student_number: this.studentid,
         });
-        console.log(res);
-        this.$notify(`注册成功，这是你的注册信息：<br><pre>${JSON.stringify(res, null, 2)}</pre>`);
+        this.$message(`注册成功，这是你的注册信息：<br><pre>${JSON.stringify(res, null, 2)}</pre>`);
       } catch (e) {
-        this.$notify('注册失败', e);
+        this.$message('注册失败', e);
         console.dir(e);
       }
     },

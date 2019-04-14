@@ -7,4 +7,7 @@ module.exports = {
     sourceType: 'module',
     ecmaVersion: 8,
   },
+  rules: {
+    'linebreak-style': 0,
+  },
 };

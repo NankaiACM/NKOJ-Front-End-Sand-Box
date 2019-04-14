@@ -8,7 +8,7 @@ module.exports = {
     },
   },
 
-  publicPath: '/public',
+  baseUrl: '/public',
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,
