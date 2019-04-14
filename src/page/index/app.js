@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import bulma from './bulma/bulma.scss';
+import bulma from '@/bulma/bulma.scss';
 import router from './router';
 import store from './store';
 import './registerServiceWorker';
 
 // import './api/axios';
 
-import message from './component/message/main';
-import userCheck from './component/usercheck/usercheck.vue';
+import message from '@/component/message/main';
+import userCheck from '@/component/usercheck/usercheck.vue';
 
 import App from './app.vue';
 

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import message from './component/message/index.vue';
+import message from '@/component/message/index.vue';
 
 export default {
   name: 'app',

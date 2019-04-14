@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import { objapi } from './fetch/main';
-import backCheck from './lib/backcheck';
-import frontCheck from './lib/frontcheck';
+import { objapi } from '@/fetch/main';
+import backCheck from '@/lib/backcheck';
+import frontCheck from '@/lib/frontcheck';
 
 // import home from './view/home.vue';
-import register from './view/nkpc/register.vue';
-import coding from './view/nkpc/coding.vue';
-import activity from './view/nkpc/activity.vue';
+import register from '@/view/nkpc/register.vue';
+import coding from '@/view/nkpc/coding.vue';
+import activity from '@/view/nkpc/activity.vue';
 
 Vue.use(Router);
 
@@ -24,7 +24,7 @@ const router = new Router({
     {
       path: '/about',
       name: 'about',
-      component: () => import(/* webpackChunkName: "about" */ './view/about.vue'),
+      component: () => import(/* webpackChunkName: "about" */ '@/view/about.vue'),
     },
     {
       path: '/register',
@@ -52,7 +52,7 @@ const router = new Router({
     {
       path: '*',
       name: 'recycler',
-      component: () => import(/* webpackChunkName: "recycler" */ './view/404.vue'),
+      component: () => import(/* webpackChunkName: "recycler" */ '@/view/404.vue'),
     },
   ],
 });

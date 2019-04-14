@@ -3,9 +3,14 @@ module.exports = {
 
   pages: {
     index: {
-      entry: 'src/main.js',
-      template: 'src/index.pug',
+      entry: 'src/page/index/app.js',
+      template: 'src/page/index/app.pug',
     },
+    admin: {
+      entry: 'src/page/admin/app.js',
+      template: 'src/page/admin/app.pug',
+    },
+    teriri: 'teririplayer/app.vue',
   },
 
   baseUrl: '/public',
