@@ -9,7 +9,7 @@ export default {
 
   },
   mounted() {
-    setTimeout(this.deleteSelf, 5500);
+    setTimeout(this.deleteSelf, 15000);
   },
   destroyed() {
 
@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     deleteSelf() {
-      return this.$root.deleteMessage(this.$props.id);
+      return this.$parent.$parent.deleteMessage(this.$props.id);
     },
     handleClick() {
       if (this.type === 'refresh') { return this.$router.go(0); }

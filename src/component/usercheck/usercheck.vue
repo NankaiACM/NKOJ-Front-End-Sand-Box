@@ -28,13 +28,12 @@ export default {
   methods: {
     async checkUser() {
       try {
-        const user = await this.$http.api('user');
+        await this.$http.api('user');
         this.userstatus = 2;
       } catch (e) {
-        this.$notify('获取用户信息失败', e);
+        this.$message('获取用户信息失败', e);
         this.userstatus = 3;
       }
-      console.log(this.userstatus);
     },
     close() {
       this.isclose = true;
