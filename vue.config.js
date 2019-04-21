@@ -13,7 +13,7 @@ module.exports = {
     teriri: 'teririplayer/app.vue',
   },
 
-  baseUrl: '/public',
+  publicPath: '/public',
   outputDir: undefined,
   assetsDir: undefined,
   runtimeCompiler: undefined,

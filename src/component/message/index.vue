@@ -38,6 +38,7 @@ export default {
         }
       };
       window.addEventListener('message', this.messagefunc);
+      document.body.insertBefore(this.$el, document.body.firstChild);
     });
   },
   beforeDestroy() {
