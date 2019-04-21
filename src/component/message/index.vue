@@ -1,19 +1,19 @@
 <template>
   <div class="notice" style="z-index: 1000">
     <transition-group name="list">
-      <Block v-for="message in messages" v-bind="message" :key="message.id"></Block>
+      <component :is="msgType(message.type)"
+        v-for="message in messages" v-bind="message" :key="message.id">
+      </component>
     </transition-group>
   </div>
 </template>
 
 <script>
 import Block from './block.vue';
+import Loader from './loader.vue';
 
 export default {
   name: 'message-list',
-  components: {
-    Block,
-  },
   data() {
     return {
       messageID: 0,
@@ -22,35 +22,19 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(function () {
-      this.messagefunc = (e) => {
-        const { data } = e;
-        switch (data.type) {
-          case 'notice':
-            this.pushMessage(data.payload);
-            break;
-          case 'event':
-            break;
-          case 'login':
-            break;
-          default:
-            break;
-        }
-      };
-      window.addEventListener('message', this.messagefunc);
+    this.$nextTick(() => {
+      window.addEventListener('message', this.receiveMsg);
       document.body.insertBefore(this.$el, document.body.firstChild);
     });
   },
   beforeDestroy() {
-    window.removeEventListener('message', this.messagefunc);
+    window.removeEventListener('message', this.receiveMsg);
   },
   methods: {
-    pushMessage({ title, content, type }) {
+    pushMessage(payload) {
       this.messages.push({
         id: this.messageID += 1,
-        title,
-        content,
-        type,
+        ...payload,
       });
     },
     deleteMessage(id) {
@@ -60,6 +44,27 @@ export default {
           return;
         }
       }
+    },
+    receiveMsg(e) {
+      const { data } = e;
+      switch (data.type) {
+        case 'notice':
+          this.pushMessage(data.payload);
+          break;
+        case 'event':
+          break;
+        case 'loader':
+          this.pushMessage({ ...data.payload, type: 'loader' });
+          break;
+        case 'login':
+          break;
+        default:
+          break;
+      }
+    },
+    msgType(type) {
+      if (type === 'loader') return Loader;
+      return Block;
     },
   },
 };
