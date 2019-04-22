@@ -32,12 +32,17 @@ export default {
 </script>
 <!-- vue-loader's scoped css won't work with style-loader -->
 <style scoped lang="scss">
-@import './message.scss'
+@import './message.scss';
+$type: (error: #cd0930, warning: goldenrod, success: forestgreen);
+
+@each $name, $color in $type {
+  @include message-node ($name, $color);
+}
 </style>
 
 <template>
 <div :id="$options.name" :class="[$options.name, `is-${type}`]" @click="handleClick">
-  <div style="display: flex"><b v-html="title">  </b>
+  <div style="display: flex; font-weight: 700" v-html="title">
     <div class="delete" style="margin-left: auto" @click="deleteSelf"></div>
   </div>
   <div class="content" v-html="content"></div>

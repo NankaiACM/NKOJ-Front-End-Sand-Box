@@ -19,11 +19,13 @@ const status = {
   status: '/status?{0}/', /* /querrystring/ */
   ftstatus: '/status/{0}/{1}?{2}/', /* /from/ /limit/ /querrystring/ */
   tstatus: '/status/{0}/{1}/', /* /till/ /querrystring/ */
+
+  detail: '/status/detail/{0}/',
 };
 
-const vedio = {
-  vediolist: '/video/list/',
-  vedio: '/video/list/{0}/',
+const video = {
+  videolist: '/video/list/',
+  video: '/video/list/{0}/',
 };
 
 const contest = {
@@ -31,6 +33,12 @@ const contest = {
   contestsign: '/user/nkpc/',
 };
 
-const url = Object.assign(home, problem, status, vedio, contest);
+const url = {
+  ...home,
+  ...problem,
+  ...status,
+  ...video,
+  ...contest,
+};
 
 export default url;

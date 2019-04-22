@@ -19,6 +19,7 @@ const status = {
   status: '/status?{querrystring}/', /* /querrystring/ */
   ftstatus: '/status/{from}/{limit}?{querrystring}/', /* /from/ /limit/ /querrystring/ */
   tstatus: '/status/{till}/{querrystring}/', /* /till/ /querrystring/ */
+  detail: '/status/detail/{sid}/',
 };
 
 const user = {
@@ -28,9 +29,9 @@ const user = {
   contestsign: '/user/nkpc/',
 };
 
-const vedio = {
-  vediolist: '/video/list/',
-  vedio: '/video/list/{name}/',
+const video = {
+  videolist: '/video/list/',
+  video: '/video/list/{name}/',
 };
 
 const contest = {
@@ -41,6 +42,14 @@ const submitted = {
   submitted: '/contest/{cid}/own_submitted',
 };
 
-const url = Object.assign(home, problem, status, vedio, user, contest, submitted);
+const url = {
+  ...home,
+  ...problem,
+  ...status,
+  ...video,
+  ...user,
+  ...contest,
+  ...submitted,
+};
 
 export default url;

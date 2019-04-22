@@ -23,9 +23,22 @@
       .message-body
         .media
           span.media-left 您已提交：
-          .media-right.tags
+          .-media-right.tags(style="flex: 1 1 auto")
               span.submitted(v-if="submitted.length === 0") 暂无
               span.tag.is-success.submitted(v-for="p in submitted",:key="p") {{' ' + p + ' '}}
+              .is-grouped
+                .no-wrap
+                  span.tag.is-warning.submitted 1001(A)
+                  span.tag.is-success.submitted(v-for="p in [1001, 1002, 1003, 1004]",:key="p") {{' ' + p + ' '}}
+                .no-wrap
+                  span.tag.is-warning.submitted 1002(B)
+                  span.tag.is-success.submitted(v-for="p in [1011, 1022]",:key="p") {{' ' + p + ' '}}
+                .no-wrap
+                  span.tag.is-warning.submitted 1003(C)
+                  span.tag.is-success.submitted(v-for="p in [1021]",:key="p") {{' ' + p + ' '}}
+                .no-wrap
+                  span.tag.is-warning.submitted 1004(D)
+                  span.tag.is-success.submitted(v-for="p in [1031, 1042, 1053]",:key="p") {{' ' + p + ' '}}
     .field.is-grouped
       .control
         .select
@@ -173,6 +186,7 @@ export default {
           lang: this.lang * 1,
           code: this.code,
         });
+        this.$trace(res.solution_id);
         this.$message('提交成功');
         this.codeok = false;
       } catch (e) {
@@ -262,5 +276,12 @@ export default {
 }
 .has-height-0px {
   height: 0px !important;
+}
+.no-wrap {
+  display: inline-block;
+  margin: 0 1rem 0 0;
+}
+.is-grouped {
+  width: 100%;
 }
 </style>

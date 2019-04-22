@@ -12,7 +12,7 @@ export default {
     };
 
     // eslint-disable-next-line no-param-reassign
-    Vue.prototype.$trace = function (sid) {
+    Vue.prototype.$trace = (sid) => {
       window.postMessage({ type: 'loader', payload: { sid } }, '*');
     };
   },

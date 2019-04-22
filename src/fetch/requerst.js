@@ -51,8 +51,8 @@ export default function requestBuildOnIsomorphicBuildOnWhatwg(url, options = {})
     })
     .catch((e) => {
       throw e;
-    })
-    // .finally(() => {
-    //   clearTimeout(timeout);
-    // });
+    });
+  // .finally(() => {
+  //   clearTimeout(timeout);
+  // });
 }

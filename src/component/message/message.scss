@@ -1,3 +1,13 @@
+@mixin message-node ($name, $color) {
+  &.is-#{$name}{
+    background-color: lighten($color, 50%);
+    color: $color;
+    &:hover {
+      box-shadow: 0 0 10px 2px $color;
+    }
+  }
+}
+
 .message-block {
   pointer-events: all;
   display: flex;
@@ -13,34 +23,14 @@
   flex-direction: column;
   transition: all 0.5s ease-in-out;
   &:active {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
   &:hover {
     box-shadow: 0 0 10px 2px #115977;
     border-radius: 5px;
     opacity: 1;
   }
-  &.is-error{
-    background-color: #fff5f7;
-    color: #cd0930;
-    &:hover {
-      box-shadow: 0 0 10px 2px #cd0930;
-    }
-  }
-  &.is-warning{
-    background-color: honeydew;
-    color: goldenrod;
-    &:hover {
-      box-shadow: 0 0 10px 2px goldenrod;
-    }
-  }
-  &.is-success{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
+
   .content {
     margin-bottom: 0
   }

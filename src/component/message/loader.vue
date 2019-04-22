@@ -1,41 +1,61 @@
 <script>
+import { setTimeout } from 'timers';
 export default {
   name: 'message-block',
   data() {
     return {
-      title: '正在查询结果...',
-      status: 'unknown',
+      r: {
+        msg_en: 'Querying',
+      },
     };
   },
-  props: ['sid'],
+  props: ['id', 'sid'],
   beforeMount() {
 
   },
   mounted() {
-    setTimeout(this.deleteSelf, 15000);
+    this.queryResult();
+    // setTimeout(this.deleteSelf, 15000);
   },
   destroyed() {
 
   },
   computed: {
+    title() {
+      if (this.r.msg_en === 'Querying')
+        return '正在查询结果...'
+      return `[${this.r.problem_id}] ${this.r.msg_en}`;
+    },
     content() {
-      return `提交${this.$props.sid}: ${this.status}`;
+      return `提交${this.$props.sid}: ${this.r.msg_cn}`;
     },
     icon() {
       return '<i></i>';
     },
     typeClass() {
-      return `is-${this.status.replace(/\s/g, '-')}`;
+      return `is-${this.r.msg_en.toLowerCase().replace(/\s/g, '-')}`;
     },
   },
   methods: {
     deleteSelf() {
-      return this.$parent.$parent.deleteMessage(this.payload);
+      return this.$parent.$parent.deleteMessage(this.$props.id);
     },
     handleClick() {
       if (this.type === 'refresh') { return this.$router.go(0); }
       return this.deleteSelf();
     },
+    queryResult() {
+      const start = performance.now();
+      this.$http.arrapi('detail', [this.sid]).then(r => {
+        const gap = performance.now() - start;
+        Object.keys(r).forEach(k => this.$set(this.r, k, r[k]));
+        if (r.msg_short == 'RU') {
+          requestAnimationFrame(() =>
+            setTimeout(this.queryResult, gap + 500)
+          )
+        }
+      });
+    }
   },
 };
 </script>
@@ -43,95 +63,23 @@ export default {
 <style scoped lang="scss">
 @import './message.scss';
 
-// FIXME:
-// scss for loop? array?
-// ....
+$type: (
+  running: #6cf,
+  accepted: #228b22,
+  presentation-error: lighten(#228b22, 10),
+  wrong-answer: #cd0930,
+  syscall-not-allowed: #FF5722,
+  function-limit-exceed: #FF5722,
+  output-limit-exceed: sandybrown,
+  memory-limit-exceed: sandybrown,
+  time-limit-exceed: sandybrown,
+  compile-error: #048,
+  runtime-error: #9932cc,
+  system-error: grey,
+);
 
-.message-block {
-  &.is-unknown{
-    background-color: lighten($color: #228b22, $amount: 50);
-    color: #228b22;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-accepted{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-presentation-error{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-wrong-answer{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-syscall-not-allowed{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-output-limit-exceed{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-output-limit-exceed{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-memory-limit-exceed{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-time-limit-exceed{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-compile-error{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-runtime-error{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
-  &.is-system-error{
-    background-color: paleturquoise;
-    color: forestgreen;
-    &:hover {
-      box-shadow: 0 0 10px 2px forestgreen;
-    }
-  }
+@each $name, $color in $type {
+  @include message-node ($name, $color);
 }
 
 </style>
