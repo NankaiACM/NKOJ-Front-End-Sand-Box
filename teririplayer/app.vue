@@ -99,8 +99,8 @@ export default {
 }
 </script>
 <style>
-@import url('./bulma.min.css');
-@import url('./video-js.min.css');
+@import url('/bulma/css/bulma.min.css');
+@import url('/video.js/dist/video-js.min.css');
 #wrap {
   background: url('./2018-04-17.jpg') 0 / cover scroll;
   background-position: 0% 0%;
