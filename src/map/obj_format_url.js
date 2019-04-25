@@ -42,6 +42,11 @@ const submitted = {
   submitted: '/contest/{cid}/own_submitted',
 };
 
+const login = {
+  login: '/api/u/login',
+  captcha: '/api/captcha/login?_t={randdouble}',
+};
+
 const url = {
   ...home,
   ...problem,
@@ -50,6 +55,7 @@ const url = {
   ...user,
   ...contest,
   ...submitted,
+  ...login,
 };
 
 export default url;
