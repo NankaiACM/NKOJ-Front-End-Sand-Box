@@ -49,54 +49,55 @@
 <script>
 import videojs from 'video.js';
 import axios from 'axios';
+
 const aget = function awaitHttpGet(api) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(((resolve, reject) => {
     axios
       .get(api)
-      .then(function (res) {
-        if (res.data.code ===0) {
+      .then((res) => {
+        if (res.data.code === 0) {
           resolve(res.data.data);
         } else {
           reject(res.data.data);
         }
       })
-      .catch(function (err) {
+      .catch((err) => {
         reject(err);
       });
-  });
+  }));
 };
 export default {
   name: 'teririplayer',
-  data () {
+  data() {
     return {
       teririr: [],
       list: [],
       title: '魔法少女teriri',
     };
   },
-  async mounted () {
+  async mounted() {
     this.teriri = videojs('teriri', {
       controls: true,
       autoplay: false,
-      preload: 'auto'
+      preload: 'auto',
     });
     this.list = await aget('http://acm.nankai.edu.cn/api/video/list');
     this.setsrc(0);
   },
   methods: {
-    videourl (name) {
-      return 'http://acm.nankai.edu.cn/api/video' + name;
+    videourl(name) {
+      return `http://acm.nankai.edu.cn/api/video${name}`;
     },
-    setsrc (index) {
+    setsrc(index) {
       this.teriri.src(this.videourl(this.list[index]));
       this.title = this.format(this.list[index]);
     },
-    format (raw) {
+    format(raw) {
       const str = raw.split('/');
       return str[str.length - 1];
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 @import url('/bulma/css/bulma.min.css');
@@ -156,4 +157,3 @@ export default {
   background: #fff;
 }
 </style>
-

@@ -1,5 +1,6 @@
 <script>
 import { setTimeout } from 'timers';
+
 export default {
   name: 'message-block',
   data() {
@@ -22,8 +23,7 @@ export default {
   },
   computed: {
     title() {
-      if (this.r.msg_en === 'Querying')
-        return '正在查询结果...'
+      if (this.r.msg_en === 'Querying') return '正在查询结果...';
       return `[${this.r.problem_id}] ${this.r.msg_en}`;
     },
     content() {
@@ -46,16 +46,14 @@ export default {
     },
     queryResult() {
       const start = performance.now();
-      this.$http.arrapi('detail', [this.sid]).then(r => {
+      this.$http.arrapi('detail', [this.sid]).then((r) => {
         const gap = performance.now() - start;
         Object.keys(r).forEach(k => this.$set(this.r, k, r[k]));
-        if (r.msg_short == 'RU') {
-          requestAnimationFrame(() =>
-            setTimeout(this.queryResult, gap + 500)
-          )
+        if (r.msg_short === 'RU') {
+          requestAnimationFrame(() => setTimeout(this.queryResult, gap + 500));
         }
       });
-    }
+    },
   },
 };
 </script>

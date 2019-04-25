@@ -96,13 +96,13 @@
       span.tag.is-success.is-medium {{item.name}}
 </template>
 <script>
-import { langMap } from '@/map/lang.js';
+import { langMap } from '@/map/lang';
 import markdownIt from 'markdown-it';
 import markdownItMathjax from 'markdown-it-mathjax';
 import markdownItLatex from 'markdown-it-latex';
 import 'markdown-it-latex/dist/index.css';
 
-import pidorders from '../../map/pidorder.js';
+import pidorders from '../../map/pidorder';
 
 const markdownit = markdownIt({
   html: true,
@@ -129,6 +129,7 @@ export default {
       codeok: false,
       code: '',
       lang: 1,
+      /* eslint-disable-next-line */
       waifu: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAM1BMVEXMzMzKysqWlpbExMS7u7vHx8eysrKampqdnZ2ZmZnCwsKoqKi2trakpKShoaG+vr6srKxM8yeWAAAA/UlEQVR42u3Su46FMAxFUdvkDQH+/2vHIcVcUYw0RYor7VVwTFzYgggAAAAAAAAAAAAA4L90PqPnm84zby1RbRPRbl09ihV9tSTVcnncVj0WiGNKyLEEj7pZeLXUwr0/0T0W0DHlOOVMIqFIDn7UpOlsjS1iOkfd7oULqKpdIltNNYq0nPL20dpvf+l7OWSFMcUdWb3utXtIsvTRinY9Z7nJCnOKljEyZC1hfIEjt98F0vnU17pfMEfLvAqHZ5T4sVsNMq9ClxXmjy5JVeTKW27v3dKp6lHCfssCc0ows8Pr3XZ971bN+nNJzibr6V8tAAAAAAAAAAAAAMBX+QEytwU/4NOHhQAAAABJRU5ErkJggg==',
       mypid: this.pid,
       oldpid: this.pid,
@@ -147,7 +148,7 @@ export default {
       try {
         const res = await this.$http.api('announce');
         if (res[0]) {
-          this.annouce = res[0];
+          [this.annouce] = res;
         }
       } catch (e) {
         this.$message('获取通告失败', e);
@@ -217,9 +218,9 @@ export default {
       await this.thisAnnouceExist();
       if (!(await this.thisContestExist())) return false;
       this.thisProblemExist();
+      return true;
     },
     ch() {
-      console.log(document.readyState);
       if (document.readyState !== 'complete') {
         this.$message('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
         this.mypid = this.oldpid;
@@ -240,7 +241,7 @@ export default {
     mypid(n, o) {
       this.oldpid = o;
     },
-    pid(n, o) {
+    pid() {
       this.thisProblemExist();
     },
   },

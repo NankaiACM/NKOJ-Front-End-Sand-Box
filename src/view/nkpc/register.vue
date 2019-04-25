@@ -70,7 +70,8 @@ export default {
     nameok() {
       return this.fullname.length > 1;
     },
-    emailok() {
+    emailok() { // 在本例中未有使用
+      /* eslint-disable-next-line */
       return /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(this.email);
     },
     qqok() {
@@ -98,6 +99,7 @@ export default {
         this.$message(`注册成功，这是你的注册信息：<br><pre>${JSON.stringify(res, null, 2)}</pre>`);
       } catch (e) {
         this.$message('注册失败', e);
+        /* eslint-disable-next-line */
         console.dir(e);
       }
     },

@@ -4,8 +4,6 @@ import router from './router';
 import store from './store';
 import './registerServiceWorker';
 
-// import './api/axios';
-
 import message from '@/component/message/main';
 import userCheck from '@/component/usercheck/usercheck.vue';
 
