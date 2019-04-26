@@ -51,6 +51,7 @@ Vue.prototype.$http.arrapi = arrapi;
 Vue.prototype.$http.objpost = objpost;
 
 export {
+  apost,
   aget,
   objapi,
   url,

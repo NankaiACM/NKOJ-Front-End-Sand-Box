@@ -10,5 +10,17 @@ module.exports = {
   },
   rules: {
     'linebreak-style': 0,
+    'max-len': [2, { code: 241, tabWidth: 2, ignoreUrls: true }],
+    'no-bitwise': 0,
+    'no-multi-assign': 0,
+    'no-return-assign': 0,
+    'no-plusplus': 0,
   },
+  // settings: {
+  //   'import/resolver': {
+  //     webpack: {
+  //       config: './node_modules/@vue/cli-service/webpack.config.js',
+  //     },
+  //   },
+  // },
 };

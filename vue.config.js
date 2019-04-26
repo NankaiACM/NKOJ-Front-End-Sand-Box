@@ -10,7 +10,7 @@ module.exports = {
       entry: 'src/page/admin/app.js',
       template: 'src/page/admin/app.pug',
     },
-    teriri: 'teririplayer/app.vue',
+    teriri: 'src/page/teriri/app.vue', // video player
   },
 
   publicPath: '/public',

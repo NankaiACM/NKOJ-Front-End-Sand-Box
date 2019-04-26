@@ -50,7 +50,7 @@ export default {
       this.$http.arrapi('detail', [this.sid]).then((r) => {
         const gap = performance.now() - start;
         Object.keys(r).forEach(k => this.$set(this.r, k, r[k]));
-        if (r.msg_short == 'RU') {
+        if (r.msg_short === 'RU') {
           requestAnimationFrame(() => setTimeout(this.queryResult, gap + 500));
         }
       });
