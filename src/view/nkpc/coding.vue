@@ -13,7 +13,7 @@
       article.media
         .media-left
           figure.img.is-64o64
-            img.is-loading(:src="waifu")
+            img.is-loading(src="../../../public/avatar.jpg")
         .media-content
           .content
             strong {{annouce.title}}
@@ -42,6 +42,7 @@
             option(v-for="(it,index,key) in langMap",:value="it.value") {{it.lang}}
       .control
         button.button.is-primary(@click="codeok = !codeok") {{ codeok ? '关闭' : '我要提交'}}
+        a.button.is-success(:href="`/status/uid=${this.$store.uid}`", target='_blank', v-if="!codeok", style="margin-left: 1rem") 提交记录
       transition(enter-active-class="animated bounceInRight",leave-active-class="animated bounceOutRight")
         .control(v-if="codeok")
           button.button.is-warning(@click="submit()") 提交

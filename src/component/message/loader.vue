@@ -1,5 +1,6 @@
 <script>
 import { setTimeout } from 'timers';
+
 export default {
   name: 'message-block',
   data() {
@@ -22,12 +23,11 @@ export default {
   },
   computed: {
     title() {
-      if (this.r.msg_en === 'Querying')
-        return '正在查询结果...'
+      if (this.r.msg_en === 'Querying') return '正在查询结果...';
       return `[${this.r.problem_id}] ${this.r.msg_en}`;
     },
     content() {
-      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time? `<br/> 时间 ${this.r.time} ms，内存 ${this.r.memory} kb` : ''}`;
+      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time ? `<br/> 时间 ${this.r.time} ms，内存 ${this.r.memory} kb` : ''}`;
     },
     icon() {
       return '<i></i>';
@@ -41,23 +41,20 @@ export default {
       return this.$parent.$parent.deleteMessage(this.$props.id);
     },
     handleClick() {
-      window.open(`/status/uid=${this.$store.uid}`, '_blank')
-      if (this.r.msg_short == 'RU')
-        return;
+      window.open(`/status/uid=${this.$store.uid}`, '_blank');
+      if (this.r.msg_short == 'RU') return;
       this.deleteSelf();
     },
     queryResult() {
       const start = performance.now();
-      this.$http.arrapi('detail', [this.sid]).then(r => {
+      this.$http.arrapi('detail', [this.sid]).then((r) => {
         const gap = performance.now() - start;
         Object.keys(r).forEach(k => this.$set(this.r, k, r[k]));
         if (r.msg_short == 'RU') {
-          requestAnimationFrame(() =>
-            setTimeout(this.queryResult, gap + 500)
-          )
+          requestAnimationFrame(() => setTimeout(this.queryResult, gap + 500));
         }
       });
-    }
+    },
   },
 };
 </script>
