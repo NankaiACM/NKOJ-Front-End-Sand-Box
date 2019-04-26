@@ -28,8 +28,9 @@ export default {
   methods: {
     async checkUser() {
       try {
-        await this.$http.api('user');
+        const { user_id } = await this.$http.api('user');
         this.userstatus = 2;
+        this.$store.uid = user_id;
       } catch (e) {
         this.$message('获取用户信息失败', e);
         this.userstatus = 3;
