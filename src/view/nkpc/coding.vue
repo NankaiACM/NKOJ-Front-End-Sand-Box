@@ -184,7 +184,7 @@ export default {
     },
     thisUrlDoseNotExist() {
       if (!this.cid) {
-        this.$router.push({ name: 'coding', params: { cid: 1015 } });
+        this.$router.push({ name: 'coding', params: { cid: 1022 } });
         return false;
       }
       return true;
@@ -229,8 +229,9 @@ export default {
     mypid(n, o) {
       this.oldpid = o;
     },
-    pid() {
-      this.thisProblemExist();
+    pid(n, o) {
+      if (n === undefined) this.thisCodingPageDoseNotExist();
+      else this.thisProblemExist();
     },
   },
 };
