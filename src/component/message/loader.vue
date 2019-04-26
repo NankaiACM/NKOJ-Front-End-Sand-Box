@@ -27,7 +27,7 @@ export default {
       return `[${this.r.problem_id}] ${this.r.msg_en}`;
     },
     content() {
-      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time ? `<br/> 时间 ${this.r.time} ms，内存 ${this.r.memory} kb` : ''}`;
+      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time !== undefined ? `<br/> 时间 ${this.r.time} ms，内存 ${this.r.memory} kb` : ''}`;
     },
     icon() {
       return '<i></i>';
@@ -86,7 +86,7 @@ $type: (
 <template>
 <div :id="$options.name" :class="[$options.name, typeClass]" @click="handleClick">
   <div style="display: flex"><b v-html="title"> </b>
-    <div class="delete" style="margin-left: auto" @click="deleteSelf"></div>
+    <div class="delete" style="margin-left: auto" @click.stop="deleteSelf"></div>
   </div>
   <div class="content" v-html="content"></div>
 </div>
