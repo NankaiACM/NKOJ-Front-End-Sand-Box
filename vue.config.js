@@ -1,6 +1,5 @@
 module.exports = {
   lintOnSave: false,
-
   pages: {
     index: {
       entry: 'src/page/index/app.js',
@@ -12,7 +11,6 @@ module.exports = {
     },
     teriri: 'src/page/teriri/app.vue', // video player
   },
-
   publicPath: '/public',
   outputDir: undefined,
   assetsDir: undefined,

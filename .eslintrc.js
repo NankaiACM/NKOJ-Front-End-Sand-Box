@@ -16,11 +16,11 @@ module.exports = {
     'no-return-assign': 0,
     'no-plusplus': 0,
   },
-  // settings: {
-  //   'import/resolver': {
-  //     webpack: {
-  //       config: './node_modules/@vue/cli-service/webpack.config.js',
-  //     },
-  //   },
-  // },
+  settings: {
+    'import/resolver': {
+      webpack: {
+        config: './node_modules/@vue/cli-service/webpack.config.js',
+      },
+    },
+  },
 };
