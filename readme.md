@@ -12,3 +12,11 @@ vue ui
 ### see more
 
 `/doc/`
+
+### 目录说明
+
+`/src/component/` 公用组件
+
+已取消 `/src/view/`
+
+`/src/page/` 主要的编辑目录

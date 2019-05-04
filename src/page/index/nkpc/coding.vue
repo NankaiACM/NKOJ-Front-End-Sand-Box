@@ -13,7 +13,7 @@
       article.media
         .media-left
           figure.img.is-64o64
-            img.is-loading(src="../../../public/avatar.jpg")
+            img.is-loading(src="../../../../public/avatar.jpg")
         .media-content
           .content
             strong {{annouce.title}}
@@ -90,7 +90,7 @@ import markdownItMathjax from 'markdown-it-mathjax';
 import markdownItLatex from 'markdown-it-latex';
 import 'markdown-it-latex/dist/index.css';
 
-import pidorders from '../../map/pidorder';
+import pidorders from '@/map/pidorder';
 
 const markdownit = markdownIt({
   html: true,
