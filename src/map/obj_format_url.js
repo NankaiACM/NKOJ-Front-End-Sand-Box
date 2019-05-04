@@ -36,6 +36,7 @@ const video = {
 
 const contest = {
   contest: '/contest/{cid}/',
+  contestlist: '/contests',
 };
 
 const submitted = {

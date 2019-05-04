@@ -4,7 +4,7 @@
       header.navbar.has-background-light
         .container
           .navbar-menu
-            // router-link.navbar-item.has-text-black(to="/register") register
+            router-link.navbar-item.has-text-black(to="/register") register
             router-link.navbar-item.has-text-black(to="/coding/1022/") coding
     .hero-body(style="background:rgba(255,255,255,.82);")
       router-view

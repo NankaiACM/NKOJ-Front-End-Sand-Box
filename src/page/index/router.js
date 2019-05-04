@@ -22,11 +22,6 @@ const router = new Router({
       component: register,
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import(/* webpackChunkName: "about" */ '@/view/about.vue'),
-    },
-    {
       path: '/register',
       component: register,
     },
@@ -49,11 +44,11 @@ const router = new Router({
       path: '/activity',
       component: activity,
     },
-    {
-      path: '*',
-      name: 'recycler',
-      component: () => import(/* webpackChunkName: "recycler" */ '@/view/404.vue'),
-    },
+    // { // webpackChunk示例
+    //   path: '*',
+    //   name: 'recycler',
+    //   component: () => import(/* webpackChunkName: "recycler" */ '@/view/404.vue'),
+    // },
   ],
 });
 

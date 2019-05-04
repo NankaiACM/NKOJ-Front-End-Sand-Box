@@ -48,24 +48,8 @@
 </template>
 <script>
 import videojs from 'video.js';
-import axios from 'axios';
+import { aget } from '@/fetch/main';
 
-const aget = function awaitHttpGet(api) {
-  return new Promise(((resolve, reject) => {
-    axios
-      .get(api)
-      .then((res) => {
-        if (res.data.code === 0) {
-          resolve(res.data.data);
-        } else {
-          reject(res.data.data);
-        }
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  }));
-};
 export default {
   name: 'teririplayer',
   data() {
@@ -99,7 +83,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 @import url('/bulma/css/bulma.min.css');
 @import url('/video.js/dist/video-js.min.css');
 #wrap {
