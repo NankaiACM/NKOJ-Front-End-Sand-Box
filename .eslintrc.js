@@ -15,6 +15,7 @@ module.exports = {
     'no-multi-assign': 0,
     'no-return-assign': 0,
     'no-plusplus': 0,
+    'no-param-reassign': 0,
   },
   // settings: {
   //   'import/resolver': {
