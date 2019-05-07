@@ -1,17 +1,19 @@
 <template lang="pug">
   div
-    // a-affix(:offsetTop="16" :target="() => this.$parent.$parent.$parent.$el") // 这是非常糟糕的设计
-    a-spin(tip="loading...",:spinning="loading")
-      div.n-margin
-    a-anchor.n-affix
-      a-anchor-link(:href="'#' + item['contest_id']",:title="item.title + JSON.parse(item.during).join(' to ')",v-for="item, index in data",:key="'link' + index")
-    a-card(v-for="item,index in data",:title="item.title",hoverable,:id="item['contest_id']",:key="'card' + index",:loading="loading").n-margin
-      a(href="#",slot="extra") 编辑
-      p
-        a-tag(color="pink") cid: {{ item['contest_id'] }}
-      p perm 魔法数字:
+    //- a-affix(:offsetTop="16" :target="() => this.$parent.$parent.$parent.$el") // 这是非常糟糕的设计
+    //- a-spin(tip="loading...",:spinning="loading")
+    //-   div.n-margin
+    a-card(title="目录",:loading="loading")
+      a-anchor.n-affix()
+        a-anchor-link(:href="'#' + item['contest_id']",:title="item.title + JSON.parse(item.during).join(' to ')",v-for="item, index in data",:key="'link' + index")
+    a-card(v-for="item,index in data",:title="item.title",hoverable,:key="'card' + index",:loading="loading",:id="item['contest_id']").n-margin
+      a(href="#",slot="extra")
+        a-tag(color="pink")  {{ item['contest_id'] }}
+        a-divider(type="vertical")
+        | 编辑
+      a-card(title="perm 魔法数字").n-margin
         a-checkbox(:checked="it === '1'",v-for="it,ix in item.perm.replace('(','').replace(')','').split(',')",:key="'check' + ix",disabled)
-      p 公开设置:
+      a-card(title="公开设置").n-margin
         a-switch(disabled,:checked="item.private")
       a-card(:title="'题目列表' + (item.problems.length === 0 ? '为空' : '')").n-margin
         a-card-grid(style="width:25%;text-align:center;",v-for="it,ix in item.problems",:key="'problem' + ix") {{ it.pid }}
@@ -34,6 +36,7 @@ export default {
       this.data = await this.$http.api('contestlist');
       this.data = this.data.list;
       this.loading = false;
+      console.log(this.$parent.$parent.$parent.$el);
     });
   },
 };

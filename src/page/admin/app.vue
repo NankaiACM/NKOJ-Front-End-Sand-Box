@@ -11,10 +11,12 @@
           a-sub-menu(key="sub1")
             span(slot="title")
               a-icon(type="user")
-              | 用户管理
-            a-menu-item(key="1")
+              | 公告与私信
+            a-menu-item(key="sub1_1")
               a-icon(type="user")
-              span.nav-text ???
+              span.nav-text 公告
+            a-menu-item(key="sub1_2")
+              span.nav-text 发送官方私信
           a-sub-menu(key="sub2")
             span(slot="title")
               a-icon(type="flag")
@@ -32,8 +34,8 @@
             span(slot="title")
               | 讨论区管理
             a-menu-item(key="sub4_1",@click="$router.push('/discuss/list')")
-              span.nav-text 讨论列表
-      a-layout(style="padding: 0 24px 24px; height: 100vh; overflow: auto;")
+              span.nav-text 文章列表
+      a-layout(style="padding: 0 24px 24px; overflow: auto;")
         a-breadcrumb(:routes="broutes",style="margin: 16px 0;")
           template(slot="itemRender",slot-scope="{route, params, routes, paths}")
             // slot-scope 是被抛弃的写法
@@ -41,7 +43,7 @@
             router-link(v-else-if="routes.includes(route)",:to="'/' + paths.join('/')") {{route.name}}
         a-layout-content(style="background: white; padding: 24px; overflow: visiable;")
           router-view
-        a-layout-footer NKOJ Admin ©2019 Created by NKOJ Development Department
+        a-layout-footer.n-tcenter NKOJ Admin ©2019 Created by NKOJ Development Department
 </template>
 
 <script>
@@ -70,6 +72,7 @@ export default {
   padding: 0;
   margin: 0;
   width: 100vw;
+  // min-height: initial !important;
   height: 100vh;
   .header {
     .logobox {
@@ -92,6 +95,5 @@ export default {
 }
 .fixed-sider {
   overflow: auto;
-  height: 100vh;
 }
 </style>

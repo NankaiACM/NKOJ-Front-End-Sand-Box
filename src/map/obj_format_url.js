@@ -53,6 +53,10 @@ const admin = {
   reportinqueue: '/admin/report',
 };
 
+const discuss = {
+  discuss0: '/posts/0',
+};
+
 const url = {
   ...home,
   ...problem,
@@ -63,6 +67,7 @@ const url = {
   ...submitted,
   ...login,
   ...admin,
+  ...discuss,
 };
 
 export default url;

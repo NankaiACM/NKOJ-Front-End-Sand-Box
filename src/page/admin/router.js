@@ -36,7 +36,7 @@ const router = new Router({
     redirect: '/discuss/list',
   }, {
     path: '/discuss/list',
-    name: '讨论列表',
+    name: '文章列表',
     component: () => import(/* webpackChunkName: "_discuss_list" */ './discuss/list'),
   },
   ],
