@@ -19,14 +19,26 @@
             span(slot="title")
               a-icon(type="flag")
               | 比赛管理
-            a-menu-item(key="2")
+            a-menu-item(key="2",@click="$router.push({name: '比赛列表'})")
               span.nav-text 比赛列表
+          a-sub-menu(key="sub3")
+            span(slot="title")
+              | 风纪委员会
+            a-menu-item(key="sub3_1",@click="() => this.$router.push('/report/list')")
+              span.nav-text 举报列表
+            a-menu-item(key="sub3_2",@click="$router.push('/report/todo')")
+              span.nav-text 未处理
+          a-sub-menu(key="sub4")
+            span(slot="title")
+              | 讨论区管理
+            a-menu-item(key="sub4_1",@click="$router.push('/discuss/list')")
+              span.nav-text 讨论列表
       a-layout(style="padding: 0 24px 24px; height: 100vh; overflow: auto;")
-        a-breadcrumb(:routes="$router.options.routes",style="margin: 16px 0;")
+        a-breadcrumb(:routes="broutes",style="margin: 16px 0;")
           template(slot="itemRender",slot-scope="{route, params, routes, paths}")
             // slot-scope 是被抛弃的写法
             span(v-if="routes.indexOf(route) === routes.length - 1") {{route.name}}
-            router-link(v-else,:to="'/' + paths.join('/')") {{route.name}}
+            router-link(v-else-if="routes.includes(route)",:to="'/' + paths.join('/')") {{route.name}}
         a-layout-content(style="background: white; padding: 24px; overflow: visiable;")
           router-view
         a-layout-footer NKOJ Admin ©2019 Created by NKOJ Development Department
@@ -37,8 +49,18 @@ export default {
   name: 'app',
   components: {},
   mounted() {
-    console.log(this.$route);
-    console.log(this.$router);
+    window.route = this.$route;
+    window.router = this.$router;
+  },
+  data() {
+    return {
+      broutes: [],
+    };
+  },
+  watch: {
+    $route(to) {
+      this.broutes = this.$router.options.routes.filter(i => to.fullPath.indexOf(i.path) === 0);
+    },
   },
 };
 </script>

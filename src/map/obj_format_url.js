@@ -44,8 +44,13 @@ const submitted = {
 };
 
 const login = {
-  login: '/api/u/login',
-  captcha: '/api/captcha/login?_t={randdouble}',
+  login: '/u/login',
+  captcha: '/captcha/login?_t={randdouble}',
+};
+
+const admin = {
+  reportlist: '/admin/report/all',
+  reportinqueue: '/admin/report',
 };
 
 const url = {
@@ -57,6 +62,7 @@ const url = {
   ...contest,
   ...submitted,
   ...login,
+  ...admin,
 };
 
 export default url;

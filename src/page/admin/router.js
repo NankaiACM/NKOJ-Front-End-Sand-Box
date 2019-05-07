@@ -18,6 +18,26 @@ const router = new Router({
     path: '/contest/list',
     name: '比赛列表',
     component: () => import(/* webpackChunkName: "_contest_list" */ './contest/list'),
+  }, {
+    path: '/report',
+    name: '风纪委员会',
+    redirect: '/report/list',
+  }, {
+    path: '/report/list',
+    name: '举报列表',
+    component: () => import(/* webpackChunkName: "_report_list" */ './report/list'),
+  }, {
+    path: '/report/todo',
+    name: '待处理',
+    component: () => import(/* webpackChunkName: "_report_todo" */ './report/todo'),
+  }, {
+    path: '/discuss',
+    name: '讨论区管理',
+    redirect: '/discuss/list',
+  }, {
+    path: '/discuss/list',
+    name: '讨论列表',
+    component: () => import(/* webpackChunkName: "_discuss_list" */ './discuss/list'),
   },
   ],
 });
