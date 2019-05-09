@@ -38,6 +38,14 @@ const router = new Router({
     path: '/discuss/list',
     name: '文章列表',
     component: () => import(/* webpackChunkName: "_discuss_list" */ './discuss/list'),
+  }, {
+    path: '/judge',
+    name: '评测管理',
+    redirect: '/judge/list',
+  }, {
+    path: '/judge/list',
+    name: '评测列表',
+    component: () => import(/* webpackChunkName: "_judge_list" */ './judge/list'),
   },
   ],
 });

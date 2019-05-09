@@ -21,8 +21,12 @@
             span(slot="title")
               a-icon(type="flag")
               | 比赛管理
-            a-menu-item(key="2",@click="$router.push({name: '比赛列表'})")
+            a-menu-item(key="sub2_1",@click="$router.push({name: '比赛列表'})")
               span.nav-text 比赛列表
+            a-menu-item(key="sub2_2")
+              span.nav-text 添加比赛
+            a-menu-item(key="sub2_3")
+              span.nav-text 修改比赛
           a-sub-menu(key="sub3")
             span(slot="title")
               | 风纪委员会
@@ -35,6 +39,20 @@
               | 讨论区管理
             a-menu-item(key="sub4_1",@click="$router.push('/discuss/list')")
               span.nav-text 文章列表
+          a-sub-menu(key="sub5")
+            span(slot="title")
+              | 题目管理
+            a-menu-item(key="sub5_1")
+              span.nav-text 题目列表
+            a-menu-item(key="sub5_2")
+              span.nav-text 添加题目
+            a-menu-item(key="sub5_3")
+              span.nav-text 修改题目
+          a-sub-menu(key="sub6")
+            span(slot="title")
+              | 评测管理
+            a-menu-item(key="sub6_1",@click="$router.push('/judge/list')")
+              span.nav-text 评测列表
       a-layout(style="padding: 0 24px 24px; overflow: auto;")
         a-breadcrumb(:routes="broutes",style="margin: 16px 0;")
           template(slot="itemRender",slot-scope="{route, params, routes, paths}")
