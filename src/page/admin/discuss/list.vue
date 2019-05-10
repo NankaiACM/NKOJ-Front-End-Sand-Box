@@ -27,7 +27,7 @@ export default {
     return {
       data: [],
       needupdata: false,
-      loading: false,
+      loading: true,
     };
   },
   mounted() {

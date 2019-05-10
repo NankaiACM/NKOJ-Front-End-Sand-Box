@@ -42,7 +42,7 @@
           a-sub-menu(key="sub5")
             span(slot="title")
               | 题目管理
-            a-menu-item(key="sub5_1")
+            a-menu-item(key="sub5_1",@click="$router.push('/problem/list')")
               span.nav-text 题目列表
             a-menu-item(key="sub5_2")
               span.nav-text 添加题目

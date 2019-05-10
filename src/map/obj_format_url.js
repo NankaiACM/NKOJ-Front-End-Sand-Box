@@ -5,7 +5,7 @@ const home = {
 };
 
 const problem = {
-  list: '/problems/list/{left}/{right}/', /* /left/ /right/ */
+  problemlist: '/problems/list/{left}/{limit}/', /* /left/ /limit/ */
   problem: '/problem/{pid}/', /* /pid/ */
   tag: '/problem/{pid}/tag/', /* /pid/ */
   judge: '/judge/',

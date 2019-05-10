@@ -46,6 +46,14 @@ const router = new Router({
     path: '/judge/list',
     name: '评测列表',
     component: () => import(/* webpackChunkName: "_judge_list" */ './judge/list'),
+  }, {
+    path: '/problem',
+    name: '题目管理',
+    redirect: '/problem/list',
+  }, {
+    path: '/problem/list',
+    name: '题目列表',
+    component: () => import(/* webapckChunkName: "_problem_list" */ './problem/list'),
   },
   ],
 });
