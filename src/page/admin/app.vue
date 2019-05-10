@@ -7,51 +7,47 @@
         a-menu-item(key="h1") 控制台
     a-layout
       a-layout-sider.fixed-sider
-        a-menu(theme="dark",mode="inline",:defaultSelectedKeys="['2']",:defaultOpenKeys="['sub2']")
-          a-sub-menu(key="sub1")
+        a-menu(theme="dark",mode="inline",:defaultSelectedKeys="defaultKey()",:defaultOpenKeys="defaultOpen()")
+          a-sub-menu(key="/message")
             span(slot="title")
               a-icon(type="user")
               | 公告与私信
-            a-menu-item(key="sub1_1")
+            a-menu-item(key="/message/announce",@click="$router.push('/message/announce')")
               a-icon(type="user")
               span.nav-text 公告
-            a-menu-item(key="sub1_2")
+            a-menu-item(key="/message/whisper",@click="$router.push('/message/whisper')")
               span.nav-text 发送官方私信
-          a-sub-menu(key="sub2")
+          a-sub-menu(key="/contest")
             span(slot="title")
               a-icon(type="flag")
               | 比赛管理
-            a-menu-item(key="sub2_1",@click="$router.push({name: '比赛列表'})")
+            a-menu-item(key="/contest/list",@click="$router.push({name: '比赛列表'})")
               span.nav-text 比赛列表
-            a-menu-item(key="sub2_2")
+            a-menu-item(key="/contest/append'",@click="$router.push('/contest/append')")
               span.nav-text 添加比赛
-            a-menu-item(key="sub2_3")
-              span.nav-text 修改比赛
-          a-sub-menu(key="sub3")
+          a-sub-menu(key="/report")
             span(slot="title")
               | 风纪委员会
-            a-menu-item(key="sub3_1",@click="() => this.$router.push('/report/list')")
+            a-menu-item(key="/report/list",@click="() => this.$router.push('/report/list')")
               span.nav-text 举报列表
-            a-menu-item(key="sub3_2",@click="$router.push('/report/todo')")
+            a-menu-item(key="/report/todo",@click="$router.push('/report/todo')")
               span.nav-text 未处理
           a-sub-menu(key="sub4")
             span(slot="title")
               | 讨论区管理
-            a-menu-item(key="sub4_1",@click="$router.push('/discuss/list')")
+            a-menu-item(key="/discuss/list",@click="$router.push('/discuss/list')")
               span.nav-text 文章列表
-          a-sub-menu(key="sub5")
+          a-sub-menu(key="/problem")
             span(slot="title")
               | 题目管理
-            a-menu-item(key="sub5_1",@click="$router.push('/problem/list')")
+            a-menu-item(key="/problem/list",@click="$router.push('/problem/list')")
               span.nav-text 题目列表
-            a-menu-item(key="sub5_2")
+            a-menu-item(key="/problem/append",@click="$router.push('/problem/append')")
               span.nav-text 添加题目
-            a-menu-item(key="sub5_3")
-              span.nav-text 修改题目
-          a-sub-menu(key="sub6")
+          a-sub-menu(key="/judge")
             span(slot="title")
               | 评测管理
-            a-menu-item(key="sub6_1",@click="$router.push('/judge/list')")
+            a-menu-item(key="/judge/list",@click="$router.push('/judge/list')")
               span.nav-text 评测列表
       a-layout(style="padding: 0 24px 24px; overflow: auto;")
         a-breadcrumb(:routes="broutes",style="margin: 16px 0;")
@@ -80,6 +76,22 @@ export default {
   watch: {
     $route(to) {
       this.broutes = this.$router.options.routes.filter(i => to.fullPath.indexOf(i.path) === 0);
+    },
+  },
+  methods: {
+    defaultKey() {
+      let ret = '';
+      // eslint-disable-next-line
+      for (const i of this.$router.options.routes) {
+        if (window.location.href.indexOf(i.path) !== -1) {
+          ret = i.path;
+        }
+      }
+      return [ret];
+    },
+    defaultOpen() {
+      const [ret] = this.defaultKey();
+      return [`/${ret.split('/')[1]}`];
     },
   },
 };

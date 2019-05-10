@@ -32,11 +32,10 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(async function () {
+    this.$nextTick(async () => {
       this.data = await this.$http.api('contestlist');
       this.data = this.data.list;
       this.loading = false;
-      console.log(this.$parent.$parent.$parent.$el);
     });
   },
 };

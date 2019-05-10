@@ -34,7 +34,6 @@ export default {
     this.$nextTick(async () => {
       this.data = await this.$http.api('discuss0');
       this.loading = false;
-      console.log(this.data);
       if (this.data.is_end !== true) {
         this.needupdata = true;
       }

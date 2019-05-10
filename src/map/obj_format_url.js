@@ -51,6 +51,7 @@ const login = {
 const admin = {
   reportlist: '/admin/report/all',
   reportinqueue: '/admin/report',
+  withdrawannounce: '/admin/message/withdraw/',
 };
 
 const discuss = {

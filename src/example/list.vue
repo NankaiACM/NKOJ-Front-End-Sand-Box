@@ -20,7 +20,7 @@ export default {
     };
   },
   mounted() {
-    this.$nextTick(async function () {
+    this.$nextTick(async () => {
       this.data = await this.$http.api('contestlist');
       this.data = this.data.list;
       this.loading = false;
@@ -35,8 +35,5 @@ export default {
 .n-affix {
   padding: 1em;
   margin: 1em 0;
-}
-.n-margin {
-  margin: 2em 0;
 }
 </style>

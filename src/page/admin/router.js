@@ -11,6 +11,18 @@ const router = new Router({
     redirect: '/contest/list',
     name: '首页',
   }, {
+    path: '/message',
+    name: '公告与私信',
+    redirect: '/message/annoumce',
+  }, {
+    path: '/message/announce',
+    name: '公告',
+    component: () => import(/* webpackChunkName: "_message_announce" */ './message/announce'),
+  }, {
+    path: '/message/whisper',
+    name: '发送官方私信',
+    component: () => import(/* webpackChunkName: "_message_whisper" */ './message/whisper'),
+  }, {
     path: '/contest',
     name: '比赛管理',
     redirect: '/contest/list',
@@ -18,6 +30,10 @@ const router = new Router({
     path: '/contest/list',
     name: '比赛列表',
     component: () => import(/* webpackChunkName: "_contest_list" */ './contest/list'),
+  }, {
+    path: '/contest/append',
+    name: '添加比赛',
+    component: () => import(/* webpackChunkName: "_contest_append" */ './contest/vim'),
   }, {
     path: '/report',
     name: '风纪委员会',
@@ -54,6 +70,10 @@ const router = new Router({
     path: '/problem/list',
     name: '题目列表',
     component: () => import(/* webapckChunkName: "_problem_list" */ './problem/list'),
+  }, {
+    path: '/problem/append',
+    name: '添加题目',
+    component: () => import(/* webpackChunkName: "_problem_append" */ './problem/append'),
   },
   ],
 });
