@@ -1,11 +1,7 @@
 module.exports = {
   lintOnSave: false,
   pages: {
-    index: {
-      entry: 'src/page/admin/app.js',
-      template: 'src/page/admin/app.pug',
-    },
-    nkpc: {
+    nkoj: {
       entry: 'src/page/index/app.js',
       template: 'src/page/index/app.pug',
     },
@@ -14,6 +10,12 @@ module.exports = {
       template: 'src/page/admin/app.pug',
     },
     teriri: 'src/page/teriri/app.vue', // video player
+  },
+  devServer: {
+    historyApiFallback: {
+      rewrites: [
+      ],
+    },
   },
   publicPath: '/public',
   outputDir: undefined,
