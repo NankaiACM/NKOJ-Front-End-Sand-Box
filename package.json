@@ -7,11 +7,22 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "chrome": "npx opn-cli http://localhost:8080 -- chrome --disable-web-security --user-data-dir=%TEMP%"
   },
   "dependencies": {
+    "@ant-design/icons-vue": "^5.1.9",
+    "animate.css": "^4.1.1",
+    "ant-design-vue": "^2.0.0-rc.7",
+    "bulma": "^0.9.1",
     "core-js": "^3.6.5",
+    "isomorphic-fetch": "^3.0.0",
+    "markdown-it": "^12.0.4",
+    "markdown-it-latex": "^0.2.0",
+    "markdown-it-mathjax": "^2.0.0",
     "register-service-worker": "^1.7.1",
+    "string-format": "^2.0.0",
+    "velocity-animate": "^1.5.2",
     "vue": "^3.0.0",
     "vue-class-component": "^8.0.0-0",
     "vue-router": "^4.0.0-0",
@@ -19,7 +30,9 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
+    "@types/isomorphic-fetch": "0.0.35",
     "@types/mocha": "^5.2.4",
+    "@types/string-format": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -35,16 +48,22 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^2.0.0-0",
+    "babel-plugin-import": "^1.13.3",
     "chai": "^4.1.2",
     "chromedriver": "87",
+    "commitizen": "^4.2.2",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^7.0.0-0",
     "geckodriver": "^1.20.0",
     "lint-staged": "^9.5.0",
+    "opn": "^6.0.0",
+    "opn-cli": "^5.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
-    "typescript": "~3.9.3"
+    "typescript": "~3.9.3",
+    "vue-cli-plugin-pug": "~2.0.0"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -54,5 +73,10 @@
       "vue-cli-service lint",
       "git add"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }

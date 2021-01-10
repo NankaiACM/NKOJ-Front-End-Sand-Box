@@ -1,0 +1,28 @@
+
+> sandbox@0.1.0 serve C:\sandbox\t1
+> vue-cli-service serve
+
+ INFO  Starting development server...
+ WARNING  Compiled with 1 warningä¸Šåˆ1:21:44
+
+Module Warning (from ./node_modules/eslint-loader/index.js):
+
+C:\sandbox\t1\src\views\admin\contest\list.vue
+  31:23  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+âœ– 1 problem (0 errors, 1 warning)
+
+
+You may use special comments to disable some warnings.
+Use // eslint-disable-next-line to ignore the next line.
+Use /* eslint-disable */ to ignore all warnings in a file.
+
+  App running at:
+  - Local:   http://localhost:8080/ 
+  - Network: http://10.22.153.146:8080/
+
+  Note that the development build is not optimized.
+  To create a production build, run npm run build.
+
+No issues found.
+ÖÕÖ¹Åú´¦Àí²Ù×÷Âğ(Y/N)? 
