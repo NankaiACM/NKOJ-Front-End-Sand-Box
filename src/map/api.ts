@@ -2,7 +2,8 @@ import fetch from 'isomorphic-fetch';
 import format from 'string-format';
 import objFormatUrl from './objFormatUrl';
 
-const API_BASE_URL = '//acm.nankai.edu.cn';
+export const API_BASE_URL = '//acm.nankai.edu.cn';
+export const AVATAR_BASE_URL = `${API_BASE_URL}/api/avatar/`;
 
 /**
  * 对 fetch 的 options 进行了一些默认设置, 对错误处理进行了修改
@@ -60,7 +61,7 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
 export interface ApiReturn {
   code: number;
   message: string;
-  data?: (AnnouncementInterface)[] | null;
+  data?: (AnnouncementInterface)[] | UserInformation | null;
 }
 
 export interface AnnouncementInterface {
@@ -139,6 +140,113 @@ export async function apiMessageWithdraw(messageId: number): Promise<void> {
     console.log('删除公告成功');
   } catch (e) {
     console.log('删除公告失败');
+    throw e;
+  }
+}
+
+export interface AdminWhisperInterface {
+  uid: number;
+  title: string;
+  message: string;
+}
+
+/**
+ * 给单个用户发送管理员私信
+ *
+ * @export
+ * @param {AdminWhisperInterface} whisper
+ * @returns {Promise<void>}
+ */
+export async function apiWhisper(whisper: AdminWhisperInterface): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.whisper, { uid: whisper.uid }),
+      {
+        method: 'POST',
+        body: JSON.stringify({ title: whisper.title, message: whisper.message }),
+      },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    console.log('发送私信成功');
+  } catch (e) {
+    console.log('发送私信失败');
+  }
+}
+
+export interface UserInformation {
+  user_id: number;
+  nickname: string;
+  gender: number;
+  email: string;
+  last_login: string;
+  submit_ac: number;
+  submit_all: number;
+  ipaddr: string;
+  role?: (number)[] | null;
+  words?: null;
+  qq: string;
+  phone: string;
+  real_name: string;
+  school: string;
+  current_badge: number;
+  removed: boolean;
+  credits: number;
+  perm: Perm;
+  ac?: (number)[] | null;
+  all?: (number)[] | null;
+}
+export interface Perm {
+  LOGIN: string;
+  COMMENT: string;
+  REPLY_POST: string;
+  ADD_CONTEST: string;
+  ADD_PROBLEM: string;
+  MANAGE_ROLE: string;
+  PUBLIC_EDIT: string;
+  REJUDGE_ALL: string;
+  SUBMIT_CODE: string;
+  SUPER_ADMIN: string;
+  GET_CODE_ALL: string;
+  CHANGE_AVATAR: string;
+  GET_CODE_SELF: string;
+  POST_NEW_POST: string;
+  CHANGE_PROFILE: string;
+  VIEW_OUTPUT_ALL: string;
+  EDIT_CONTEST_ALL: string;
+  EDIT_PROBLEM_ALL: string;
+  VIEW_OUTPUT_SELF: string;
+  REJUDGE_CONTEST_ALL: string;
+  BYPASS_STATISTIC_ALL: string;
+  REJUDGE_CONTEST_SELF: string;
+}
+
+/**
+ * 获取指定用户的详细信息
+ *
+ * @export
+ * @param {number} userId
+ * @returns {Promise<UserInformation>}
+ */
+export async function apiUserInformation(userId: number): Promise<UserInformation> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.userplus, { uid: userId }),
+      {
+        method: 'GET',
+      },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    const userInformation: UserInformation = ret.data as UserInformation;
+    console.log('获取用户信息成功');
+    return userInformation;
+  } catch (e) {
+    console.log('获取用户信息失败');
     throw e;
   }
 }

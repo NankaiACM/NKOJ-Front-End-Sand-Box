@@ -26,6 +26,7 @@ const user = {
   login: '/api/u/login/',
   captcha: '/api/captcha/login?_t={random}/',
   user: '/api/user/',
+  userplus: '/api/user/{uid}',
   contestsign: '/api/user/nkpc/',
 };
 

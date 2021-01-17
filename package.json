@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "chrome": "npx opn-cli http://localhost:8080 -- chrome --disable-web-security --user-data-dir=%TEMP%"
+    "chrome": "open-cli https://localhost:8080 -- chrome --disable-web-security --user-data-dir=%TEMP%"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^5.1.9",
@@ -58,8 +58,7 @@
     "eslint-plugin-vue": "^7.0.0-0",
     "geckodriver": "^1.20.0",
     "lint-staged": "^9.5.0",
-    "opn": "^6.0.0",
-    "opn-cli": "^5.0.0",
+    "open-cli": "^6.0.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
