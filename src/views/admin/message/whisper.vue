@@ -21,12 +21,12 @@ div
 <script lang="ts">
 import { UserOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 import { Options, Vue } from 'vue-class-component';
+import { getAvatarImageSrc } from '@/map/objFormatUrl';
 import {
   AdminWhisperInterface,
   UserInformation,
   apiWhisper,
   apiUserInformation,
-  AVATAR_BASE_URL,
 } from '@/map/api';
 
 @Options({
@@ -36,7 +36,7 @@ import {
   },
   computed: {
     avatarSrc() {
-      return AVATAR_BASE_URL + this.whisperPackage.uid;
+      return getAvatarImageSrc(this.whisperPackage.uid);
     },
   },
 })

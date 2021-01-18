@@ -1,21 +1,22 @@
 import { createStore } from 'vuex';
+import { UserInformation } from '@/map/api';
+
+export const SET_USER_CHECK_BOOLEAN = 'SET_USER_CHECK_BOOLEAN';
+export const SET_USER_DATA_USERINFORMATION = 'SET_USER_DATA_USERINFORMATION';
 
 export default createStore({
   state: {
     user: {
-      check: false,
-      data: {},
+      check: false, // 当用户校验状态为 false 时要求进行登录
+      data: {}, // 用户详细信息
     },
   },
   mutations: {
-    userCheck(state, payload) {
+    [SET_USER_CHECK_BOOLEAN](state, payload: boolean) {
       state.user.check = payload;
     },
-    userData(state, payload) {
+    [SET_USER_DATA_USERINFORMATION](state, payload: UserInformation) {
       state.user.data = payload;
     },
-  },
-  actions: {
-
   },
 });

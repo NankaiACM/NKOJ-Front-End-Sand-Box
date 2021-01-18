@@ -9,6 +9,10 @@ a-layout#admin-layout
       :defaultSelectedKeys="['h1']"
     )
       a-menu-item(key="h1") 控制台
+      a-menu-item(key="h2")
+        template(v-if="true", @click="$router.push('//acm.nankai.edu.cn/')") 登录
+        template(v-else)
+          a-avatar(src="")
   a-layout
     a-layout-sider.fixed-sider
       a-menu(

@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from './store';
 
 const router = createRouter({
   history: createWebHistory(/* process.env.BASE_URL */),
@@ -70,8 +71,19 @@ const router = createRouter({
     path: '/problem/append',
     name: '添加题目',
     component: () => import(/* webpackChunkName: "_problem_append" */ './problem/append.vue'),
-  },
-  ],
+  }, {
+    path: '/signin',
+    name: '登录',
+    component: () => import(/* webpackChunkName: "_signin" */ './signin/form.vue'),
+  }],
+});
+
+router.beforeEach((to, from, next) => {
+  if (to.name !== '登录' && !store.state.user.check) {
+    next({ name: '登录' });
+  } else {
+    next();
+  }
 });
 
 export default router;

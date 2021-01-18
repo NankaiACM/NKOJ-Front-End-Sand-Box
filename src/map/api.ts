@@ -1,9 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import format from 'string-format';
-import objFormatUrl from './objFormatUrl';
-
-export const API_BASE_URL = '//acm.nankai.edu.cn';
-export const AVATAR_BASE_URL = `${API_BASE_URL}/api/avatar/`;
+import objFormatUrl, { API_BASE_URL } from './objFormatUrl';
 
 /**
  * 对 fetch 的 options 进行了一些默认设置, 对错误处理进行了修改
@@ -225,18 +222,17 @@ export interface Perm {
 
 /**
  * 获取指定用户的详细信息
+ * userId 为空字符串或者 number
  *
  * @export
- * @param {number} userId
+ * @param {number | string} userId
  * @returns {Promise<UserInformation>}
  */
-export async function apiUserInformation(userId: number): Promise<UserInformation> {
+export async function apiUserInformation(userId: number | string): Promise<UserInformation> {
   try {
     const ret: ApiReturn = await fetchBase(
       format(objFormatUrl.userplus, { uid: userId }),
-      {
-        method: 'GET',
-      },
+      { method: 'GET' },
     );
     if (ret.code !== 0) {
       console.log(ret.message);
@@ -247,6 +243,73 @@ export async function apiUserInformation(userId: number): Promise<UserInformatio
     return userInformation;
   } catch (e) {
     console.log('获取用户信息失败');
+    throw e;
+  }
+}
+
+/**
+ * 获取当前用户的详细信息
+ *
+ * @export
+ * @returns {Promise<UserInformation>}
+ */
+export async function apiSelfProfile(): Promise<UserInformation> {
+  return apiUserInformation('');
+}
+
+export interface SignInInterface {
+  captcha: string;
+  password: string;
+  user: string;
+}
+
+/**
+ * 用户登录
+ * signInPackage.password 需要使用公钥加密
+ * 例: signInPackage.password = forge.util.encode64(forge.pki.publicKeyFromPem(publicKey).encrypt(signInPackage.password));
+ *
+ * @export
+ * @param {SignInInterface} signInPackage
+ * @returns {Promise<UserInformation>}
+ */
+export async function apiSignIn(signInPackage: SignInInterface): Promise<UserInformation> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      objFormatUrl.login,
+      { method: 'POST', body: JSON.stringify(signInPackage) },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    const userInformation: UserInformation = ret.data as UserInformation;
+    console.log('登录成功');
+    return userInformation;
+  } catch (e) {
+    console.log('登录失败');
+    throw e;
+  }
+}
+
+/**
+ * 用户登出
+ *
+ * @export
+ * @returns {Promise<void>}
+ */
+export async function apiLogout(): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      objFormatUrl.logout,
+      { method: 'GET' },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    console.log('登出成功');
+  } catch (e) {
+    console.log('登出失败');
     throw e;
   }
 }
