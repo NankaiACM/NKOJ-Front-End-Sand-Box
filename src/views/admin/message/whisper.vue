@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   a-form
-    a-form-item(label="用户编号", :label-col="{ span: 5 }", :wrapper-col="{ span: 12 }")
+    a-form-item(label="用户 ID", :label-col="{ span: 5 }", :wrapper-col="{ span: 12 }")
       a-space
         a-input-number(v-model:value="whisperPackage.uid", @change="setNickname")
         a-button(:loading="nicknameLoading") {{ nickname }}

@@ -40,7 +40,7 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
       }
       if (response.status === 401) {
         // 未授权
-        console.log('未授权，前往 http://acm.nankai.edu.cn 登录');
+        console.log('未授权');
       }
       throw response;
     })
@@ -55,10 +55,21 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
     });
 }
 
+export interface ErrorInterface {
+  name: string;
+  message: string;
+  debug: Debug;
+}
+export interface Debug {
+  value: string;
+  location: string;
+}
+
 export interface ApiReturn {
   code: number;
   message: string;
-  data?: (AnnouncementInterface)[] | UserInformation | null;
+  data?: (AnnouncementInterface)[] | UserInformation | ContestsListInterface | ContestDetailInterface | ContestCreateReturn | null;
+  error?: (ErrorInterface)[];
 }
 
 export interface AnnouncementInterface {
@@ -310,6 +321,214 @@ export async function apiLogout(): Promise<void> {
     console.log('登出成功');
   } catch (e) {
     console.log('登出失败');
+    throw e;
+  }
+}
+
+export interface ContestsListInterface {
+  requested: number;
+  served: number;
+  is_end: boolean;
+  list?: (ContestSimpleEntity)[] | null;
+}
+export interface ContestSimpleEntity {
+  contest_id: number;
+  title: string;
+  description: string;
+  during: string;
+  perm: string;
+  private: boolean;
+  problems?: (ProblemSimpleEntity | null)[] | null;
+}
+export interface ProblemSimpleEntity {
+  pid: number;
+  ac: number;
+  all: number;
+}
+
+/**
+ * 获取比赛列表
+ */
+export async function apiContestsList(offset: number, pageSize: number): Promise<ContestsListInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.contestslistrange, { offset, pageSize }),
+      { method: 'GET' },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    const contestsList: ContestsListInterface = ret.data as ContestsListInterface;
+    console.log('获取比赛列表成功');
+    return contestsList;
+  } catch (e) {
+    console.log('获取比赛列表失败');
+    throw e;
+  }
+}
+
+/**
+ * 获取全部的比赛列表
+ *
+ * @export
+ * @param {number} pageSize
+ * @returns {Promise<(ContestSimpleEntity)[]>}
+ */
+export async function apiContestsListAll(pageSize: number): Promise<(ContestSimpleEntity)[]> {
+  try {
+    let offset = 0;
+    let contestsListsAll = [] as Array<ContestSimpleEntity>;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      // eslint-disable-next-line no-await-in-loop
+      const contestsList = await apiContestsList(offset, pageSize);
+      contestsListsAll = contestsListsAll.concat(contestsList.list as Array<ContestSimpleEntity>);
+      if (contestsList.is_end) {
+        break;
+      }
+      offset += pageSize;
+    }
+    console.log('获取全部比赛列表成功');
+    return contestsListsAll;
+  } catch (e) {
+    console.log('获取全部比赛列表失败');
+    throw e;
+  }
+}
+
+export interface ContestDetailInterface {
+  contest_id: number;
+  title: string;
+  during: string;
+  description: string;
+  extra: boolean;
+  perm: string;
+  private: boolean;
+  rule: string;
+  start: string;
+  end: string;
+  problems?: (ContestProblemEntity)[] | null;
+  file?: string;
+}
+export interface ContestProblemEntity {
+  problem_id: number;
+  ac: number;
+  all: number;
+  title: string;
+  special_judge: number;
+  detail_judge: boolean;
+  level: number;
+}
+
+/**
+ * 获取比赛详情
+ *
+ * @export
+ * @param {number} contestId
+ * @returns {Promise<ContestDetailInterface>}
+ */
+export async function apiContestDetail(contestId: number): Promise<ContestDetailInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.contest, { cid: contestId }),
+      { method: 'GET' },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    const contestDetail: ContestDetailInterface = ret.data as ContestDetailInterface;
+    console.log('获取比赛详情成功');
+    return contestDetail;
+  } catch (e) {
+    console.log('获取比赛详情失败');
+    throw e;
+  }
+}
+
+export interface ContestCreateInterface {
+  title: string;
+  perm: string; // "(1,0,0,0,0)"
+  start: string; // date and time, "2021-01-20T00:00"
+  end: string; // like above
+  private: boolean;
+  rule: string; // "acm", "oi"
+  file: File;
+  description: string;
+}
+
+export interface ContestCreateReturn {
+  file: string;
+  contest_id: number;
+  title: string;
+  during: string;
+  description: string;
+  extra: boolean;
+  perm: string;
+  private: boolean;
+  rule: string;
+}
+
+/**
+ * 创建比赛。api 支持上传 file 字段的文件，考虑到暂无应用场景，此处搁置。
+ * TODO: 上传 file，在对应场景中应用。
+ *
+ * @export
+ * @param {ContestCreateInterface} contestCreate
+ * @returns {Promise<ContestCreateReturn>}
+ */
+export async function apiContestCreate(contestCreate: ContestCreateInterface): Promise<ContestCreateReturn> {
+  const formData = new FormData();
+  formData.append('title', contestCreate.title);
+  formData.append('perm', contestCreate.perm);
+  formData.append('start', contestCreate.start);
+  formData.append('end', contestCreate.end);
+  formData.append('private', String(contestCreate.private));
+  formData.append('rule', contestCreate.rule);
+  formData.append('file', contestCreate.file);
+  formData.append('description', contestCreate.description);
+  try {
+    const ret: ApiReturn = await fetchBase(
+      objFormatUrl.contestcreate,
+      { method: 'POST', body: formData },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      if (ret.error !== undefined) {
+        ret.error.map((item) => console.log(`${item.name}: ${item.message}`));
+      }
+      throw ret;
+    }
+    const ccreateReturn: ContestCreateReturn = ret.data as ContestCreateReturn;
+    console.log('创建比赛成功');
+    return ccreateReturn;
+  } catch (e) {
+    console.log('创建比赛失败');
+    throw e;
+  }
+}
+
+/**
+ * 删除比赛
+ *
+ * @export
+ * @param {number} contestId
+ * @returns {Promise<void>}
+ */
+export async function apiContestDelete(contestId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.contestDelete, { cid: contestId }),
+      { method: 'GET' },
+    );
+    if (ret.code !== 0) {
+      console.log(ret.message);
+      throw ret;
+    }
+    console.log('删除比赛成功');
+  } catch (e) {
+    console.log('删除比赛失败');
     throw e;
   }
 }

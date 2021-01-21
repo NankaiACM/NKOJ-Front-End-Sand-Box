@@ -1,5 +1,6 @@
+import { apiSelfProfile } from '@/map/api';
 import { createRouter, createWebHistory } from 'vue-router';
-import store from './store';
+import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from './store';
 
 const router = createRouter({
   history: createWebHistory(/* process.env.BASE_URL */),
@@ -30,7 +31,12 @@ const router = createRouter({
   }, {
     path: '/contest/append',
     name: '添加比赛',
-    component: () => import(/* webpackChunkName: "_contest_append" */ './contest/vim.vue'),
+    component: () => import(/* webpackChunkName: "_contest_append" */ './contest/append.vue'),
+  }, {
+    path: '/contest/view/:contestId',
+    name: '查看比赛',
+    props: true,
+    component: () => import(/* webpackChunkName: "_contest_view" */ './contest/view.vue'),
   }, {
     path: '/report',
     name: '风纪委员会',
@@ -78,9 +84,18 @@ const router = createRouter({
   }],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.name !== '登录' && !store.state.user.check) {
-    next({ name: '登录' });
+    try {
+      const selfProfile = await apiSelfProfile(); // 检查是不是已经持有登录凭据
+      store.commit(SET_USER_DATA_USERINFORMATION, selfProfile); // 更新当前用户信息
+      store.commit(SET_USER_CHECK_BOOLEAN, true); // 更新用户校验状态
+      next();
+    } catch (e) {
+      // 没有登录凭据
+      // 跳转到登录页面
+      next({ name: '登录' });
+    }
   } else {
     next();
   }

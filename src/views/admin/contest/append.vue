@@ -1,0 +1,157 @@
+<template lang="pug">
+a-space(direction="vertical", style="width: 100%;")
+  a-alert(message="请在创建比赛后在比赛编辑中添加题目. 对于私密比赛的题目, 请先将题面空白的题目添加到比赛中后, 再编辑题目题面.", type="warning")
+  a-card(title="比赛标题", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-input(v-model:value="title")
+  a-card(title="perm 魔法数字（无特殊情况保持默认）", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space
+      a-select(v-for="(item, idx) in perm", v-model:value="perm[idx]", :key="idx")
+        a-select-option(:value="1") 1
+        a-select-option(:value="0") 0
+  a-card(title="开始日期和时间", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space
+      a-date-picker(v-model:value="startDate")
+      a-time-picker(v-model:value="startTime", format="HH:mm")
+  a-card(title="结束日期和时间", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space
+      a-date-picker(v-model:value="endDate")
+      a-time-picker(v-model:value="endTime", format="HH:mm")
+  a-card(title="秘密模式", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-select(v-model:value="private")
+      a-select-option(:value="1") true
+      a-select-option(:value="0") false
+  a-card(title="赛制", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-select(v-model:value="rule")
+      a-select-option(value="acm") acm
+      a-select-option(value="oi") oi
+  a-card(title="markdown 文件（可不选）", hoverable)
+    template(#extra)
+      a-tag(color="blue") 可选
+    a-tabs
+      a-tab-pane(tab="选择文件", key="1")
+        a-space
+          a-upload(v-model:fileList="fileList", @change="onlyOneFile", :beforeUpload="beforeUpload")
+            a-button
+              UploadOutlined
+      a-tab-pane(tab="预览", key="2")
+        div(v-html="fileRender")
+  a-card(title="比赛描述（支持支持 html, latex 的 markdown）", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space(direction="vertical", style="width: 100%;")
+      a-alert(message="latex 数学公式请使用 `` 包裹, 例如 `@(1/2[1-(1/2)^n])/(1-(1/2))=s_n@`.")
+      a-alert(message="latex 及 latex 数学公式使用帮助 请查阅 markdown-it-latex, markdown-it-mathjax.")
+      a-tabs
+        a-tab-pane(tab="编辑", key="1")
+          a-textarea(v-model:value="description", :auto-size="{ minRows: 5 }")
+        a-tab-pane(tab="预览", key="2")
+          div(v-html="markdownRender")
+  a-button(type="primary", size="large", style="float: right;", :loading="loading", @click="submit") 创建比赛
+</template>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import { UploadOutlined } from '@ant-design/icons-vue';
+import moment from 'moment';
+import { Modal } from 'ant-design-vue';
+import 'markdown-it-latex/dist/index.css';
+import { apiContestCreate, ContestCreateInterface } from '@/map/api';
+import markdownIt from '@/map/markdown';
+
+@Options({
+  components: {
+    UploadOutlined,
+  },
+  computed: {
+    markdownRender() {
+      return markdownIt.render(this.description);
+    },
+    fileRender() {
+      return markdownIt.render(this.filePlaneText);
+    },
+  },
+})
+export default class extends Vue {
+  title = '';
+
+  perm = [1, 0, 0, 0, 0];
+
+  startDate = moment();
+
+  startTime = moment();
+
+  endDate = moment();
+
+  endTime = moment();
+
+  private = 1; // need trans to boolean
+
+  rule = 'acm';
+
+  fileList = [] as (object)[];
+
+  filePlaneText = '';
+
+  description = '';
+
+  loading = false;
+
+  onlyOneFile() {
+    if (this.fileList.length > 0) {
+      this.fileList = this.fileList.slice(-1);
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        this.filePlaneText = fileReader.result as string;
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      fileReader.readAsText((this.fileList[0] as any).originFileObj);
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  beforeUpload() {
+    return false;
+  }
+
+  async submit() {
+    this.loading = true;
+    try {
+      const ccIn: ContestCreateInterface = {
+        title: this.title,
+        perm: `(${this.perm.join(',')})`,
+        start: `${this.startDate.format('YYYY-MM-DD')}T${this.startTime.format('HH:mm')}`, // moment.HTML5_FMT.DATETIME_LOCAL
+        end: `${this.endDate.format('YYYY-MM-DD')}T${this.endTime.format('HH:mm')}`,
+        private: Boolean(this.private),
+        rule: this.rule,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        file: (this.fileList[0] as any).originFileObj,
+        description: this.description,
+      };
+      const ccReturn = await apiContestCreate(ccIn);
+      const router = this.$router;
+      Modal.success({
+        title: '创建比赛成功',
+        content: `比赛 ${ccReturn.contest_id} 已被创建`,
+        onOk() {
+          router.push({ name: '比赛列表' });
+        },
+        okText: '前往比赛列表',
+      });
+    } catch (e) {
+      // do nothing
+    }
+    this.loading = false;
+  }
+}
+</script>

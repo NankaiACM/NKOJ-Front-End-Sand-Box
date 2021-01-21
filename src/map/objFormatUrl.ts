@@ -37,7 +37,10 @@ const video = {
 
 const contest = {
   contest: '/contest/{cid}/',
-  contestlist: '/contests',
+  contestDelete: '/admin/contest/remove/{cid}',
+  contestcreate: '/admin/contest/',
+  contestslist: '/contests', // 可能是不完全的
+  contestslistrange: '/contests/{offset}/{pageSize}/', // offset 从 0 开始
 };
 
 const submitted = {
@@ -70,9 +73,13 @@ const discuss = {
 
 export const API_BASE_URL = '//acm.nankai.edu.cn/api';
 
-export const AVATAR_BASE_URL = `${API_BASE_URL}/avatar`; // suffix uid
+const AVATAR_BASE_URL = `${API_BASE_URL}/avatar`; // suffix uid
 
-export const CAPTCHA_BASE_URL = `${API_BASE_URL}/captcha/login?_t=`; // suffix Math.random()
+const CAPTCHA_BASE_URL = `${API_BASE_URL}/captcha/login?_t=`; // suffix Math.random()
+
+const NKPC_BASE_URL = '//acm.nankai.edu.cn/NKPC';
+
+const PROBLEM_BASE_BURL = '//acm.nankai.edu.cn/problem';
 
 export function newCaptchaImageSrc(): string {
   return `${CAPTCHA_BASE_URL}${Math.random()}`;
@@ -80,6 +87,14 @@ export function newCaptchaImageSrc(): string {
 
 export function getAvatarImageSrc(uidOrNickname: number | string): string {
   return `${AVATAR_BASE_URL}/${uidOrNickname}`;
+}
+
+export function getNKPCUrl(contestId: number): string {
+  return `${NKPC_BASE_URL}/${contestId}`;
+}
+
+export function getProblemUrl(problemId: number): string {
+  return `${PROBLEM_BASE_BURL}/${problemId}`;
 }
 
 export default {

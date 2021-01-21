@@ -1,47 +1,96 @@
 <template lang="pug">
-div
-  //- a-affix(:offsetTop="16" :target="() => this.$parent.$parent.$parent.$el") // 这是非常糟糕的设计
-  //- a-spin(tip="loading...",:spinning="loading")
-  //-   div.n-margin
-  a-card(title="目录",:loading="loading")
-    a-anchor.n-affix()
-      a-anchor-link(:href="'#' + item['contest_id']",:title="item.title + JSON.parse(item.during).join(' to ')",v-for="item, index in contestArray",:key="'link' + index")
-  a-card(v-for="item,index in contestArray",:title="item.title",hoverable,:key="'card' + index",:loading="loading",:id="item['contest_id']").n-margin
-    template(#extra)
-      a(href="#",slot="extra")
-        a-tag(color="pink")  {{ item['contest_id'] }}
-        a-divider(type="vertical")
-        | 编辑 {{item}}
-    a-card(title="perm 魔法数字").n-margin
-      a-checkbox(:checked="it === '1'",v-for="it,ix in item.perm.replace('(','').replace(')','').split(',')",:key="'check' + ix",disabled)
-    a-card(title="公开设置").n-margin
-      a-switch(disabled,:checked="item.private")
-    a-card(:title="'题目列表' + (item.problems.length === 0 ? '为空' : '')").n-margin
-      a-card-grid(style="width:25%;text-align:center;",v-for="it,ix in item.problems",:key="'problem' + ix") {{ it.pid }}
-    a-card(title="比赛描述",hoverable).n-margin {{ item.description }}
-    a-card(title="比赛时间",hoverable).n-margin
-      a-timeline
-        a-timeline-item(color="green") start {{ JSON.parse(item.during)[0] }}
-        a-timeline-item(color="blue") end {{ JSON.parse(item.during)[1] }}
+a-table(:data-source="contestArray", rowKey="contest_id")
+  a-table-column(key="contest_id", title="Contest ID", data-index="contest_id")
+  a-table-column(key="title", title="Title", data-index="title")
+  a-table-column(key="start", title="Start", data-index="during")
+    template(v-slot="{text}")
+      span {{ JSON.parse(text)[0] }}
+  a-table-column(key="end", title="End", data-index="during")
+    template(v-slot="{text}")
+      span {{ JSON.parse(text)[1] }}
+  a-table-column(key="perm", title="Perm", data-index="perm")
+  a-table-column(key="private", title="Private", data-index="private")
+    template(v-slot="{ text }")
+      span {{ text }}
+  a-table-column(key="action", title="Action")
+    template(#default="{ text, record }")
+      a-button(type="link", @click="$router.push({ name: '查看比赛', params: { contestId: Number(record.contest_id) }})") 查看
+      a-divider(type="vertical")
+      a-button(type="link") 编辑
+      a-divider(type="vertical")
+      a-button(type="danger", @click="showDeleteConfirm(record)") 删除
 </template>
 <script lang="ts">
 import { Vue } from 'vue-class-component';
-import { AnnouncementInterface, apiMessageAnnouncement } from '@/map/api';
+import { createVNode } from 'vue';
+import { Modal } from 'ant-design-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import {
+  ContestSimpleEntity,
+  apiContestsListAll,
+  apiContestDelete,
+} from '@/map/api';
 
 export default class ContestList extends Vue {
-  contestArray: (AnnouncementInterface)[] = [];
+  contestArray: (ContestSimpleEntity)[] = [];
 
   loading = true;
+
+  pageSize = 10;
 
   mounted() {
     this.$nextTick(async () => {
       try {
-        this.contestArray = await apiMessageAnnouncement();
+        this.contestArray = await apiContestsListAll(this.pageSize);
         console.log(this.contestArray);
-        this.loading = false;
       } catch (e) {
-        this.loading = false;
+        // do nothing
       }
+      this.loading = false;
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  showDeleteConfirm(record: ContestSimpleEntity) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const vm = this;
+    // so ugly callback chain
+    Modal.confirm({
+      title: `确认删除比赛 ${record.contest_id} ？`,
+      icon: createVNode(ExclamationCircleOutlined),
+      content: `比赛标题：${record.title}`,
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        // 第一次确认
+        const vmm = vm;
+        Modal.confirm({
+          title: `最后一次确认删除比赛 ${record.contest_id} ？`,
+          icon: createVNode(ExclamationCircleOutlined),
+          content: `比赛标题：${record.title}`,
+          okText: 'Yes',
+          okType: 'danger',
+          cancelText: 'No',
+          async onOk() {
+            // 第二次确认，最终确认
+            vmm.loading = true;
+            try {
+              await apiContestDelete(record.contest_id);
+              vmm.contestArray = await apiContestsListAll(vmm.pageSize);
+            } catch (e) {
+              // do nothing
+            }
+            vmm.loading = false;
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
     });
   }
 }
