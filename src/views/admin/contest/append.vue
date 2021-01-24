@@ -16,14 +16,14 @@ a-space(direction="vertical", style="width: 100%;")
     template(#extra)
       a-tag(color="red") 必填
     a-space
-      a-date-picker(v-model:value="startDate")
-      a-time-picker(v-model:value="startTime", format="HH:mm")
+      a-date-picker(v-model:value="start")
+      a-time-picker(v-model:value="start")
   a-card(title="结束日期和时间", hoverable)
     template(#extra)
       a-tag(color="red") 必填
     a-space
-      a-date-picker(v-model:value="endDate")
-      a-time-picker(v-model:value="endTime", format="HH:mm")
+      a-date-picker(v-model:value="end")
+      a-time-picker(v-model:value="end")
   a-card(title="秘密模式", hoverable)
     template(#extra)
       a-tag(color="red") 必填
@@ -66,8 +66,9 @@ import { UploadOutlined } from '@ant-design/icons-vue';
 import moment from 'moment';
 import { Modal } from 'ant-design-vue';
 import 'markdown-it-latex/dist/index.css';
-import { apiContestCreate, ContestCreateInterface } from '@/map/api';
-import markdownIt from '@/map/markdown';
+import { apiContestCreate } from '@/typescript/api';
+import markdownIt from '@/typescript/markdown';
+import { ContestRule } from '@/typescript/constant';
 
 @Options({
   components: {
@@ -75,10 +76,10 @@ import markdownIt from '@/map/markdown';
   },
   computed: {
     markdownRender() {
-      return markdownIt.render(this.description);
+      return markdownIt.render(this.description || '');
     },
     fileRender() {
-      return markdownIt.render(this.filePlaneText);
+      return markdownIt.render(this.filePlaneText || '');
     },
   },
 })
@@ -87,17 +88,13 @@ export default class extends Vue {
 
   perm = [1, 0, 0, 0, 0];
 
-  startDate = moment();
+  start = moment();
 
-  startTime = moment();
-
-  endDate = moment();
-
-  endTime = moment();
+  end = moment();
 
   private = 1; // need trans to boolean
 
-  rule = 'acm';
+  rule = ContestRule.ACM;
 
   fileList = [] as (object)[];
 
@@ -127,15 +124,15 @@ export default class extends Vue {
   async submit() {
     this.loading = true;
     try {
-      const ccIn: ContestCreateInterface = {
+      const ccIn: ContestCreateRequestInterface = {
         title: this.title,
         perm: `(${this.perm.join(',')})`,
-        start: `${this.startDate.format('YYYY-MM-DD')}T${this.startTime.format('HH:mm')}`, // moment.HTML5_FMT.DATETIME_LOCAL
-        end: `${this.endDate.format('YYYY-MM-DD')}T${this.endTime.format('HH:mm')}`,
+        start: this.start.format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS), // <input type="datetime-local" step="1" /> YYYY-MM-DDTHH:mm:ss
+        end: this.end.format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS),
         private: Boolean(this.private),
         rule: this.rule,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        file: (this.fileList[0] as any).originFileObj,
+        file: (this.fileList[0] as any)?.originFileObj,
         description: this.description,
       };
       const ccReturn = await apiContestCreate(ccIn);

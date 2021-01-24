@@ -21,13 +21,11 @@ div
 <script lang="ts">
 import { UserOutlined, NotificationOutlined } from '@ant-design/icons-vue';
 import { Options, Vue } from 'vue-class-component';
-import { getAvatarImageSrc } from '@/map/objFormatUrl';
+import { getAvatarImageSrc } from '@/typescript/objFormatUrl';
 import {
-  AdminWhisperInterface,
-  UserInformation,
   apiWhisper,
   apiUserInformation,
-} from '@/map/api';
+} from '@/typescript/api';
 
 @Options({
   components: {
@@ -43,7 +41,7 @@ import {
 export default class extends Vue {
   loading = false;
 
-  whisperPackage: AdminWhisperInterface = {
+  whisperPackage: AdminWhisperRequestInterface = {
     uid: -1,
     title: '',
     message: '',
@@ -67,7 +65,7 @@ export default class extends Vue {
   async setNickname() {
     this.nicknameLoading = true;
     try {
-      const userInformation: UserInformation = await apiUserInformation(this.whisperPackage.uid);
+      const userInformation: UserInformationReturnInterface = await apiUserInformation(this.whisperPackage.uid);
       this.nickname = userInformation.nickname;
     } catch (e) {
       // do nothing

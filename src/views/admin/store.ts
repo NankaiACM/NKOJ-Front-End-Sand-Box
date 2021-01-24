@@ -1,5 +1,4 @@
 import { createStore } from 'vuex';
-import { UserInformation } from '@/map/api';
 
 export const SET_USER_CHECK_BOOLEAN = 'SET_USER_CHECK_BOOLEAN';
 export const SET_USER_DATA_USERINFORMATION = 'SET_USER_DATA_USERINFORMATION';
@@ -15,7 +14,7 @@ export default createStore({
     [SET_USER_CHECK_BOOLEAN](state, payload: boolean) {
       state.user.check = payload;
     },
-    [SET_USER_DATA_USERINFORMATION](state, payload: UserInformation) {
+    [SET_USER_DATA_USERINFORMATION](state, payload: UserInformationReturnInterface) {
       state.user.data = payload;
     },
   },

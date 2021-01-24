@@ -1,0 +1,210 @@
+<template lang="pug">
+a-space(direction="vertical", style="width: 100%;")
+  a-card(title="比赛标题", hoverable)
+    a-input(v-model:value="contestDetail.title")
+  a-card(title="开始日期和时间", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space
+      a-date-picker(v-model:value="contestDetail.start")
+      a-time-picker(v-model:value="contestDetail.start")
+  a-card(title="结束日期和时间", hoverable)
+    template(#extra)
+      a-tag(color="red") 必填
+    a-space
+      a-date-picker(v-model:value="contestDetail.end")
+      a-time-picker(v-model:value="contestDetail.end")
+  a-card(title="比赛描述", hoverable)
+    a-space(direction="vertical", style="width: 100%;")
+      a-alert(message="latex 数学公式请使用 `` 包裹, 例如 `@(1/2[1-(1/2)^n])/(1-(1/2))=s_n@`.")
+      a-alert(message="latex 及 latex 数学公式使用帮助 请查阅 markdown-it-latex, markdown-it-mathjax.")
+      a-tabs
+        a-tab-pane(tab="编辑", key="1")
+          a-textarea(v-model:value="contestDetail.description", :auto-size="{ minRows: 5 }")
+        a-tab-pane(tab="预览", key="2")
+          div(v-html="descriptionRender")
+  a-card(title="附加文件", hoverable)
+    a-space(direction="vertical", style="width: 100%;")
+      a-alert(message="上传新的文件将会覆盖原文件")
+      a-tabs
+        a-tab-pane(tab="原始数据", key="1")
+          pre {{ contestDetail.file }}
+        a-tab-pane(tab="预览", key="2")
+          div(v-html="fileRender")
+        a-tab-pane(tab="上传", key="3")
+          a-space
+            a-upload(v-model:fileList="fileList", @change="onlyOneFile", :beforeUpload="beforeUpload")
+              a-button
+                UploadOutlined
+  a-card(title="Extra")
+    a-select(v-model:value="contestDetail.extra")
+      a-select-option(:value="1") true
+      a-select-option(:value="0") false
+  a-card(title="私密模式")
+    a-select(v-model:value="contestDetail.private")
+      a-select-option(:value="1") true
+      a-select-option(:value="0") false
+  a-card(title="perm 魔法数字")
+    a-space
+      a-select(v-for="(item, idx) in contestDetail.permArray", v-model:value="contestDetail.permArray[idx]", :key="idx")
+        a-select-option(:value="1") 1
+        a-select-option(:value="0") 0
+  a-card(title="赛制")
+    a-select(v-model:value="contestDetail.rule")
+      a-select-option(value="acm") acm
+      a-select-option(value="oi") oi
+  a-button(type="primary", @click="diffAndSaveBasic", style="float: right;")
+    template(#icon)
+      SaveOutlined
+    | 保存比赛基础数据
+</template>
+<script lang="ts">
+/* eslint-disable max-classes-per-file */
+import { Vue, prop, Options } from 'vue-class-component';
+import { UploadOutlined, SaveOutlined } from '@ant-design/icons-vue';
+import { apiContestDetail, apiContestEditSave } from '@/typescript/api';
+import { getNKPCUrl } from '@/typescript/objFormatUrl';
+import markdownIt from '@/typescript/markdown';
+import moment from 'moment';
+import { ContestRule } from '@/typescript/constant';
+
+class ContestEditData {
+  title: string;
+
+  permArray: (number)[];
+
+  start: moment.Moment; // date and time, moment.HTML5_FMT.DATETIME_LOCAL_SECONDS
+
+  end: moment.Moment; // like above
+
+  private: number;
+
+  extra: number;
+
+  rule: ContestRule; // 'acm', 'oi'
+
+  file: string | undefined;
+
+  description: string;
+
+  constructor(ctd?: ContestDetailReturnInterface) {
+    // ugly :-(
+    if (ctd) {
+      this.title = ctd.title || '';
+      this.permArray = ctd.perm.slice(1, -1).split(',').map((item) => Number(item));
+      this.start = moment(ctd.start); // utc 时间默认转化为本地时间
+      this.end = moment(ctd.end);
+      this.private = Number(ctd.private);
+      this.extra = Number(ctd.extra);
+      this.rule = ctd.rule as ContestRule;
+      this.file = ctd.file;
+      this.description = ctd.description;
+    } else {
+      this.title = '';
+      this.permArray = [1, 0, 0, 0, 0];
+      this.start = moment(); // 默认本地时间
+      this.end = moment();
+      this.private = 1;
+      this.extra = 0;
+      this.rule = ContestRule.ACM;
+      this.file = '';
+      this.description = '';
+    }
+  }
+
+  toContestEditSaveReqObj(originFileObj: File): ContestEditSaveRequestInterface {
+    const cESReq: ContestEditSaveRequestInterface = {
+      title: this.title,
+      extra: Boolean(this.extra),
+      perm: `(${this.permArray.join(',')})`,
+      start: this.start.format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS),
+      end: this.end.format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS),
+      private: Boolean(this.private),
+      rule: this.rule,
+      description: this.description,
+      file: originFileObj,
+    };
+    return cESReq;
+  }
+}
+
+class Props {
+  contestId = prop({
+    type: Number,
+    required: true,
+  });
+}
+
+@Options({
+  components: {
+    UploadOutlined,
+    SaveOutlined,
+  },
+  computed: {
+    nkpcUrl() {
+      return getNKPCUrl(this.contestId);
+    },
+    descriptionRender() {
+      return markdownIt.render(this.contestDetail.description || '');
+    },
+    fileRender() {
+      return markdownIt.render(this.contestDetail.file || '');
+    },
+  },
+})
+export default class extends Vue.with(Props) {
+  loading = false;
+
+  contestDetail = new ContestEditData();
+
+  preContestData = new ContestEditData();
+
+  fileList = [] as (object)[];
+
+  onlyOneFile() {
+    if (this.fileList.length > 0) {
+      this.fileList = this.fileList.slice(-1);
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        this.contestDetail.file = fileReader.result as string;
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      fileReader.readAsText((this.fileList[0] as any).originFileObj);
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  beforeUpload() {
+    return false;
+  }
+
+  mounted() {
+    this.$nextTick(async () => {
+      await this.loadData();
+    });
+  }
+
+  async loadData() {
+    this.loading = true;
+    try {
+      const ctd = await apiContestDetail(this.contestId);
+      this.preContestData = new ContestEditData(ctd);
+      this.contestDetail = new ContestEditData(ctd);
+    } catch (e) {
+      // do nothing
+    }
+    this.loading = false;
+  }
+
+  async diffAndSaveBasic() {
+    console.log(this.contestDetail);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cESReq = this.contestDetail.toContestEditSaveReqObj((this.fileList[0] as any)?.originFileObj);
+    try {
+      await apiContestEditSave(this.contestId, cESReq);
+    } catch (e) {
+      // do nothing
+    }
+  }
+}
+</script>

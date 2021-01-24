@@ -40,15 +40,13 @@ div.cc-container
 import { Options, Vue } from 'vue-class-component';
 import { ReloadOutlined, LogoutOutlined } from '@ant-design/icons-vue';
 import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from '@/views/admin/store';
-import { getAvatarImageSrc, newCaptchaImageSrc } from '@/map/objFormatUrl';
+import { getAvatarImageSrc, newCaptchaImageSrc } from '@/typescript/objFormatUrl';
 import {
-  SignInInterface,
   apiSignIn,
-  UserInformation,
   apiSelfProfile,
   apiLogout,
-} from '@/map/api';
-import publicKey from '@/map/id_rsa.pub';
+} from '@/typescript/api';
+import publicKey from '@/typescript/idRsa.pub';
 import forge from 'node-forge';
 
 @Options({
@@ -66,7 +64,7 @@ import forge from 'node-forge';
   },
 })
 export default class extends Vue {
-  signInPackage: SignInInterface = {
+  signInPackage: SignInRequestInterface = {
     captcha: '',
     password: '',
     user: '',
@@ -83,12 +81,12 @@ export default class extends Vue {
   mounted() {
     this.$nextTick(async () => {
       if (store.state.user.check) {
-        this.signInPackage.user = (store.state.user.data as UserInformation).nickname;
+        this.signInPackage.user = (store.state.user.data as UserInformationReturnInterface).nickname;
       } else {
         try {
           const selfProfile = await apiSelfProfile(); // 检查是不是已经持有登录凭据
           store.commit(SET_USER_DATA_USERINFORMATION, selfProfile); // 更新当前用户信息
-          this.signInPackage.user = (store.state.user.data as UserInformation).nickname;
+          this.signInPackage.user = (store.state.user.data as UserInformationReturnInterface).nickname;
           store.commit(SET_USER_CHECK_BOOLEAN, true); // 更新用户校验状态
         } catch (e) {
           // do nothing
@@ -100,7 +98,7 @@ export default class extends Vue {
 
   async signIn() {
     try {
-      const pck: SignInInterface = { ...this.signInPackage };
+      const pck: SignInRequestInterface = { ...this.signInPackage };
       pck.password = forge.util.encode64(forge.pki.publicKeyFromPem(publicKey).encrypt(pck.password)); // 公钥加密
       const selfProfile = await apiSignIn(pck);
       store.commit(SET_USER_DATA_USERINFORMATION, selfProfile); // 更新当前用户信息

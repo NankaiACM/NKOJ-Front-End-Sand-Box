@@ -1,4 +1,4 @@
-const langMap = [{
+const LangMap = [{
   value: '0',
   lang: 'C',
 }, {
@@ -20,7 +20,7 @@ const langMap = [{
   value: '6',
   lang: 'pypy3',
 }];
-const langHash = {
+const LangHash = {
   0: 'C',
   1: 'C++',
   2: 'JavaScript',
@@ -29,7 +29,7 @@ const langHash = {
   5: 'Text',
   6: 'pypy3',
 };
-const lang2code = {
+const Lang2Code = {
   C: 0,
   'C++': 1,
   JavaScript: 2,
@@ -38,4 +38,12 @@ const lang2code = {
   Text: 5,
   pypy3: 6,
 };
-export { langMap, langHash, lang2code };
+
+enum ContestRule {
+  ACM = 'acm',
+  OI = 'oi',
+}
+
+export {
+  LangMap, LangHash, Lang2Code, ContestRule,
+};

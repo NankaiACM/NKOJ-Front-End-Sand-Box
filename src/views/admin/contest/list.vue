@@ -16,7 +16,7 @@ a-table(:data-source="contestArray", rowKey="contest_id")
     template(#default="{ text, record }")
       a-button(type="link", @click="$router.push({ name: '查看比赛', params: { contestId: Number(record.contest_id) }})") 查看
       a-divider(type="vertical")
-      a-button(type="link") 编辑
+      a-button(type="link", @click="$router.push({ name: '编辑比赛', params: { contestId: Number(record.contest_id) }})") 编辑
       a-divider(type="vertical")
       a-button(type="danger", @click="showDeleteConfirm(record)") 删除
 </template>
@@ -26,13 +26,12 @@ import { createVNode } from 'vue';
 import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import {
-  ContestSimpleEntity,
   apiContestsListAll,
   apiContestDelete,
-} from '@/map/api';
+} from '@/typescript/api';
 
 export default class ContestList extends Vue {
-  contestArray: (ContestSimpleEntity)[] = [];
+  contestArray: (ContestsListContestSimpleEntity)[] = [];
 
   loading = true;
 
@@ -51,7 +50,7 @@ export default class ContestList extends Vue {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  showDeleteConfirm(record: ContestSimpleEntity) {
+  showDeleteConfirm(record: ContestsListContestSimpleEntity) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const vm = this;
     // so ugly callback chain

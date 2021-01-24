@@ -1,24 +1,24 @@
 const home = {
   announce: '/message/announcement/',
-  newproblem: '/problems/list/{level}/{count}/', /* /level/ /count/ */
+  newproblem: '/problems/list/{level}/{count}/',
   newcontest: '/contests/',
 };
 
 const problem = {
-  problemlist: '/problems/list/{left}/{limit}/', /* /left/ /limit/ */
-  problem: '/problem/{pid}/', /* /pid/ */
-  tag: '/problem/{pid}/tag/', /* /pid/ */
+  problemlist: '/problems/list/{offset}/{pageSize}/', // offset 从 0 开始
+  problem: '/problem/{pid}/',
+  tag: '/problem/{pid}/tag/',
   judge: '/judge/',
-  rejudge: '/judge/rejudge/{sid}/', /* sid */
-  downvote: '/problem/{pid}/downvote/{tid}/', /* /pid/ /tid/ */
-  upvote: '/problem/{pid}/upvote/{tid}/', /* /pid/ /tid/ */
-  tagremove: '/problem/{pid}/remove/{tid}/', /* /pid/ /tid/ */
+  rejudge: '/judge/rejudge/{sid}/',
+  downvote: '/problem/{pid}/downvote/{tid}/',
+  upvote: '/problem/{pid}/upvote/{tid}/',
+  tagremove: '/problem/{pid}/remove/{tid}/',
 };
 
 const status = {
-  status: '/status?{querrystring}/', /* /querrystring/ */
-  ftstatus: '/status/{from}/{limit}?{querrystring}/', /* /from/ /limit/ /querrystring/ */
-  tstatus: '/status/{till}/{querrystring}/', /* /till/ /querrystring/ */
+  status: '/status?{querrystring}/',
+  ftstatus: '/status/{from}/{limit}?{querrystring}/',
+  tstatus: '/status/{till}/{querrystring}/',
   detail: '/status/detail/{sid}/',
 };
 
@@ -36,11 +36,15 @@ const video = {
 };
 
 const contest = {
-  contest: '/contest/{cid}/',
+  contest: '/contest/{cid}/', // '/admin/contest/{cid}' 提供的基础信息较少 :-)
+  amdinContest: '/admin/contest/{cid}',
   contestDelete: '/admin/contest/remove/{cid}',
   contestcreate: '/admin/contest/',
+  contestEdit: '/admin/contest/{cid}',
   contestslist: '/contests', // 可能是不完全的
   contestslistrange: '/contests/{offset}/{pageSize}/', // offset 从 0 开始
+  contestProblemAdd: '/admin/contest/{cid}/problem/add/{pid}',
+  contestProblemRemove: '/admin/contest/{cid}/problem/remove/{pid}',
 };
 
 const submitted = {

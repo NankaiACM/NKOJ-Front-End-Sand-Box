@@ -39,7 +39,7 @@
     .control
       .select
         select(v-model="lang")
-          option(v-for="(it,index,key) in langMap",:value="it.value") {{it.lang}}
+          option(v-for="(it,index,key) in LangMap",:value="it.value") {{it.lang}}
     .control
       button.button.is-primary(@click="codeok = !codeok") {{ codeok ? '关闭' : '我要提交'}}
       a.button.is-success(:href="`/status/uid=${this.$store.uid}`", target='_blank', v-if="!codeok", style="margin-left: 1rem") 提交记录
@@ -84,13 +84,13 @@
     span.tag.is-success.is-medium {{item.name}}
 </template>
 <script>
-import { langMap } from '@/map/lang';
+import { LangMap } from '@/typescript/constant';
 import markdownIt from 'markdown-it';
 import markdownItMathjax from 'markdown-it-mathjax';
 import markdownItLatex from 'markdown-it-latex';
 import 'markdown-it-latex/dist/index.css';
 
-import pidOrders from '@/map/pidOrder';
+import pidOrders from '@/typescript/pidOrder';
 
 const markdownit = markdownIt({
   html: true,
@@ -225,7 +225,7 @@ export default {
     });
   },
   computed: {
-    langMap: () => langMap,
+    LangMap: () => LangMap,
   },
   watch: {
     mypid(n, o) {

@@ -20,18 +20,16 @@ div
 </template>
 <script lang="ts">
 import {
-  AnnouncementInterface,
-  MessageInterface,
   apiMessageAnnouncement,
   apiMessageAll,
   apiMessageWithdraw,
-} from '@/map/api';
+} from '@/typescript/api';
 import { Vue } from 'vue-class-component';
 
 export default class extends Vue {
-  announceArray: AnnouncementInterface[] = []
+  announceArray: AnnouncementReturnInterface[] = []
 
-  message: MessageInterface = {
+  message: MessageRequestInterface = {
     title: '',
     message: '',
   }

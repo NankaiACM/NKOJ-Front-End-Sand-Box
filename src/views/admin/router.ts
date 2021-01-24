@@ -1,4 +1,4 @@
-import { apiSelfProfile } from '@/map/api';
+import { apiSelfProfile } from '@/typescript/api';
 import { createRouter, createWebHistory } from 'vue-router';
 import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from './store';
 
@@ -35,8 +35,13 @@ const router = createRouter({
   }, {
     path: '/contest/view/:contestId',
     name: '查看比赛',
-    props: true,
+    props: (route) => ({ contestId: Number(route.params.contestId) }),
     component: () => import(/* webpackChunkName: "_contest_view" */ './contest/view.vue'),
+  }, {
+    path: '/contest/edit/:contestId',
+    name: '编辑比赛',
+    props: (route) => ({ contestId: Number(route.params.contestId) }),
+    component: () => import(/* webpackChunkName: "_contest_edit" */ './contest/edit/edit.vue'),
   }, {
     path: '/report',
     name: '风纪委员会',
