@@ -45,6 +45,8 @@ a-space(direction="vertical", style="width: 100%;")
       a-select-option(:value="1") true
       a-select-option(:value="0") false
   a-card(title="perm 魔法数字")
+    a-alert(message="默认为 '(1,0,0,0,0)'")
+    br
     a-space
       a-select(v-for="(item, idx) in contestDetail.permArray", v-model:value="contestDetail.permArray[idx]", :key="idx")
         a-select-option(:value="1") 1
@@ -62,11 +64,16 @@ a-space(direction="vertical", style="width: 100%;")
 /* eslint-disable max-classes-per-file */
 import { Vue, prop, Options } from 'vue-class-component';
 import { UploadOutlined, SaveOutlined } from '@ant-design/icons-vue';
+import moment from 'moment';
+import { createTwoFilesPatch } from 'diff';
+import * as Diff2Html from 'diff2html';
+import 'diff2html/bundles/css/diff2html.min.css';
 import { apiContestDetail, apiContestEditSave } from '@/typescript/api';
 import { getNKPCUrl } from '@/typescript/objFormatUrl';
 import markdownIt from '@/typescript/markdown';
-import moment from 'moment';
 import { ContestRule } from '@/typescript/constant';
+import { Modal } from 'ant-design-vue';
+import { createVNode } from 'vue';
 
 class ContestEditData {
   title: string;
@@ -157,7 +164,7 @@ export default class extends Vue.with(Props) {
 
   contestDetail = new ContestEditData();
 
-  preContestData = new ContestEditData();
+  preContestDetail = new ContestEditData();
 
   fileList = [] as (object)[];
 
@@ -188,7 +195,7 @@ export default class extends Vue.with(Props) {
     this.loading = true;
     try {
       const ctd = await apiContestDetail(this.contestId);
-      this.preContestData = new ContestEditData(ctd);
+      this.preContestDetail = new ContestEditData(ctd);
       this.contestDetail = new ContestEditData(ctd);
     } catch (e) {
       // do nothing
@@ -197,14 +204,39 @@ export default class extends Vue.with(Props) {
   }
 
   async diffAndSaveBasic() {
-    console.log(this.contestDetail);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const cESReq = this.contestDetail.toContestEditSaveReqObj((this.fileList[0] as any)?.originFileObj);
-    try {
-      await apiContestEditSave(this.contestId, cESReq);
-    } catch (e) {
-      // do nothing
-    }
+    const oldStr = JSON.stringify(this.preContestDetail, null, 2);
+    const newStr = JSON.stringify(this.contestDetail, null, 2);
+    const diffString = createTwoFilesPatch('file', 'file', oldStr, newStr, undefined, undefined, { context: Math.max(oldStr.split('\n').length, newStr.split('\n').length) });
+    Modal.confirm({
+      title: '确认修改信息',
+      onOk: async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const cESReq = this.contestDetail.toContestEditSaveReqObj((this.fileList[0] as any)?.originFileObj);
+        try {
+          await apiContestEditSave(this.contestId, cESReq);
+          await this.loadData();
+        } catch (e) {
+          // do nothing
+        }
+      },
+      onCancel() {
+        // do nothing
+      },
+      content: createVNode('div', {
+        innerHTML: Diff2Html.html(diffString, {
+          drawFileList: false,
+          matching: 'lines',
+          outputFormat: 'side-by-side',
+        }),
+      }),
+      class: 'diff-save',
+    });
   }
 }
 </script>
+<style>
+.diff-save {
+  min-width: 800px;
+  max-height: 800px;
+}
+</style>

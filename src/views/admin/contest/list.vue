@@ -51,36 +51,33 @@ export default class ContestList extends Vue {
 
   // eslint-disable-next-line class-methods-use-this
   showDeleteConfirm(record: ContestsListContestSimpleEntity) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const vm = this;
     // so ugly callback chain
     Modal.confirm({
       title: `确认删除比赛 ${record.contest_id} ？`,
       icon: createVNode(ExclamationCircleOutlined),
       content: `比赛标题：${record.title}`,
-      okText: 'Yes',
+      okText: '是',
       okType: 'danger',
-      cancelText: 'No',
-      onOk() {
+      cancelText: '否',
+      onOk: () => {
         // 第一次确认
-        const vmm = vm;
         Modal.confirm({
           title: `最后一次确认删除比赛 ${record.contest_id} ？`,
           icon: createVNode(ExclamationCircleOutlined),
           content: `比赛标题：${record.title}`,
-          okText: 'Yes',
+          okText: '是',
           okType: 'danger',
-          cancelText: 'No',
-          async onOk() {
+          cancelText: '否',
+          onOk: async () => {
             // 第二次确认，最终确认
-            vmm.loading = true;
+            this.loading = true;
             try {
               await apiContestDelete(record.contest_id);
-              vmm.contestArray = await apiContestsListAll(vmm.pageSize);
+              this.contestArray = await apiContestsListAll(this.pageSize);
             } catch (e) {
               // do nothing
             }
-            vmm.loading = false;
+            this.loading = false;
           },
           onCancel() {
             console.log('Cancel');
