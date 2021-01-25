@@ -4,15 +4,16 @@ interface ErrorInterface {
   debug: Debug;
 }
 interface Debug {
-  value: string;
-  location: string;
+  value?: string;
+  location?: string;
+  type?: string;
 }
 
 interface ApiReturn {
   code: number;
   message: string;
   data?: (AnnouncementReturnInterface)[] | UserInformationReturnInterface | ContestsListReturnInterface | ContestDetailReturnInterface | ContestCreateReturnInterface | ProblemsListReturnInterface | null;
-  error?: (ErrorInterface)[];
+  error?: (ErrorInterface)[] | ErrorInterface;
 }
 
 interface AnnouncementReturnInterface {

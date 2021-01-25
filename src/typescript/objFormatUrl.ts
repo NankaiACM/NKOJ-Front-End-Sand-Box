@@ -45,6 +45,8 @@ const contest = {
   contestslistrange: '/contests/{offset}/{pageSize}/', // offset 从 0 开始
   contestProblemAdd: '/admin/contest/{cid}/problem/add/{pid}',
   contestProblemRemove: '/admin/contest/{cid}/problem/remove/{pid}',
+  contestUserAdd: '/admin/contest/{cid}/user/add/{uid}',
+  contestUserRemove: '/admin/contest/{cid}/user/remove/{uid}',
 };
 
 const submitted = {

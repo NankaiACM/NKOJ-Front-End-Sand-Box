@@ -106,6 +106,9 @@ export default class extends Vue.with(Props) {
       moveKeys.forEach(async (value: string) => {
         try {
           await apiContestProblemRemove(this.contestId, Number(value));
+          const it = this.problemsArray.find((item) => item.key === value);
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          if (it?.contest_id) { it.contest_id = undefined; }
         } catch (e) {
           this.targetArray.push(value); // 放回右侧表格
           // do nothing other

@@ -8,11 +8,12 @@ a-layout#admin-layout
       mode="horizontal",
       :defaultSelectedKeys="['h1']"
     )
-      a-menu-item(key="h1") 控制台
-      a-menu-item(key="h2")
-        template(v-if="true", @click="$router.push('//acm.nankai.edu.cn/')") 登录
+      a-menu-item(key="h1", @click="$router.push('/')") 控制台
+      a-menu-item(key="h2", @click="$router.push({ name: '登录'})")
+        template(v-if="!userCheck") 登录
         template(v-else)
-          a-avatar(src="")
+          a-avatar(:src="userAvatarSrc") 用户信息
+      a-menu-item(key="h3", @click="showDrawer = !showDrawer") 调试信息
   a-layout
     a-layout-sider.fixed-sider
       a-menu(
@@ -105,7 +106,10 @@ a-layout#admin-layout
       )
         router-view
       a-layout-footer.n-tcenter NKOJ Admin ©2019 Created by NKOJ Development Department
-  //- message
+  a-drawer(title="消息通知", v-model:visible="showDrawer", width="700")
+    a-space(direction="vertical")
+      a-card(v-for="(item, index) in logs", hoverable)
+        vnode(:vnode="item")
 </template>
 
 <style lang="scss" scoped>
@@ -145,9 +149,12 @@ a-layout#admin-layout
 
 <script>
 import { Vue, Options } from 'vue-class-component';
+import { h } from 'vue';
 import {
   UserOutlined, FlagOutlined, CommentOutlined, ClusterOutlined, CodeOutlined, SafetyCertificateOutlined,
 } from '@ant-design/icons-vue';
+import { getAvatarImageSrc } from '@/typescript/objFormatUrl';
+import store from './store';
 
 // import message from '@/component/message/index.vue';
 
@@ -160,6 +167,18 @@ import {
     ClusterOutlined,
     CodeOutlined,
     SafetyCertificateOutlined,
+    Vnode: {
+      functional: true,
+      render() {
+        return h(this.vnode);
+      },
+      props: {
+        vnode: {
+          type: Object,
+          required: true,
+        },
+      },
+    },
   },
   watch: {
     $route(to) {
@@ -171,10 +190,21 @@ import {
     publicPath() {
       return process.env.BASE_URL;
     },
+    logs() {
+      return store.state.logModule.logs;
+    },
+    userCheck() {
+      return store.state.user.check;
+    },
+    userAvatarSrc() {
+      return getAvatarImageSrc(store.state.user.data.user_id);
+    },
   },
 })
 export default class App extends Vue {
   broutes = [];
+
+  showDrawer = false;
 
   mounted() {
     window.route = this.$route;

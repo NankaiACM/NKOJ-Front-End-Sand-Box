@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import format from 'string-format';
+import { USER_DEBUG_LOG, USER_DEBUG_LOG_TYPE } from '@/components/log/log';
 import objFormatUrl, { API_BASE_URL } from './objFormatUrl';
 
 /**
@@ -40,7 +41,7 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
       }
       if (response.status === 401) {
         // 未授权
-        console.log('未授权');
+        USER_DEBUG_LOG('未授权');
       }
       throw response;
     })
@@ -55,6 +56,50 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
     });
 }
 
+function convertErrorInterfaceToString(item: ErrorInterface): string {
+  let str = '';
+  if (item.name) {
+    str += `error.name: ${item.name}\n`;
+  }
+  if (item.message) {
+    str += `error.message: ${item.message}\n`;
+  }
+  if (item.debug) {
+    if (item.debug?.location) {
+      str += `debug.location: ${item.debug.location}\n`;
+    }
+    if (item.debug?.type) {
+      str += `debug.type: ${item.debug?.type}\n`;
+    }
+    if (item.debug?.value) {
+      str += `debug.value: ${item.debug?.value}\n`;
+    }
+  }
+  return str;
+}
+
+function logAndThrowOnError(ret: ApiReturn) {
+  if (ret.code === 0) {
+    return;
+  }
+  // ret.code !== 0)
+  let str = '';
+  if (ret.message) {
+    str += `${ret.message}\n`;
+  }
+  if (ret.error) {
+    if (ret.error instanceof Array) {
+      ret.error.forEach((item) => {
+        str += convertErrorInterfaceToString(item);
+      });
+    } else {
+      str += convertErrorInterfaceToString(ret.error);
+    }
+  }
+  USER_DEBUG_LOG(str, ret);
+  throw ret;
+}
+
 /**
  * 获取所有的公告的集合
  *
@@ -64,15 +109,12 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
 export async function apiMessageAnnouncement(): Promise<AnnouncementReturnInterface[]> {
   try {
     const ret: ApiReturn = await fetchBase(objFormatUrl.announce, { method: 'GET' });
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const annouceArray = ret.data as AnnouncementReturnInterface[];
-    console.log('获取公告成功');
+    USER_DEBUG_LOG('获取公告成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return annouceArray;
   } catch (e) {
-    console.log('获取公告失败');
+    USER_DEBUG_LOG('获取公告失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -87,13 +129,10 @@ export async function apiMessageAnnouncement(): Promise<AnnouncementReturnInterf
 export async function apiMessageAll(body: MessageRequestInterface): Promise<void> {
   try {
     const ret: ApiReturn = await fetchBase(objFormatUrl.messageall, { method: 'POST', body: JSON.stringify(body) });
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('发送公告成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('发送公告成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('发送公告失败');
+    USER_DEBUG_LOG('发送公告失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -108,13 +147,10 @@ export async function apiMessageAll(body: MessageRequestInterface): Promise<void
 export async function apiMessageWithdraw(messageId: number): Promise<void> {
   try {
     const ret: ApiReturn = await fetchBase(format(objFormatUrl.withdrawannounce, { mid: messageId }), { method: 'GET' });
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('删除公告成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('删除公告成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('删除公告失败');
+    USER_DEBUG_LOG('删除公告失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -135,13 +171,10 @@ export async function apiWhisper(whisper: AdminWhisperRequestInterface): Promise
         body: JSON.stringify({ title: whisper.title, message: whisper.message }),
       },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('发送私信成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('发送私信成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('发送私信失败');
+    USER_DEBUG_LOG('发送私信失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
   }
 }
 
@@ -159,15 +192,12 @@ export async function apiUserInformation(userId: number | string): Promise<UserI
       format(objFormatUrl.userplus, { uid: userId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const userInformation: UserInformationReturnInterface = ret.data as UserInformationReturnInterface;
-    console.log('获取用户信息成功');
+    USER_DEBUG_LOG('获取用户信息成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return userInformation;
   } catch (e) {
-    console.log('获取用户信息失败');
+    USER_DEBUG_LOG('获取用户信息失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -182,7 +212,7 @@ export async function apiUserInformation(userId: number | string): Promise<UserI
 // export async function apiAllUserInformation(limitId: number): Promise<Array<UserInformationReturnInterface>> {
 //   try {
 //   } catch (e) {
-//     console.log('获取全部用户信息失败');
+//     USER_DEBUG_LOG('获取全部用户信息失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
 //     throw e;
 //   }
 // }
@@ -212,15 +242,12 @@ export async function apiSignIn(signInPackage: SignInRequestInterface): Promise<
       objFormatUrl.login,
       { method: 'POST', body: JSON.stringify(signInPackage) },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const userInformation: UserInformationReturnInterface = ret.data as UserInformationReturnInterface;
-    console.log('登录成功');
+    USER_DEBUG_LOG('登录成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return userInformation;
   } catch (e) {
-    console.log('登录失败');
+    USER_DEBUG_LOG('登录失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -237,13 +264,10 @@ export async function apiLogout(): Promise<void> {
       objFormatUrl.logout,
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('登出成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('登出成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('登出失败');
+    USER_DEBUG_LOG('登出失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -257,15 +281,12 @@ export async function apiContestsList(offset: number, pageSize: number): Promise
       format(objFormatUrl.contestslistrange, { offset, pageSize }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const contestsList: ContestsListReturnInterface = ret.data as ContestsListReturnInterface;
-    console.log('获取比赛列表成功');
+    USER_DEBUG_LOG('获取比赛列表成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return contestsList;
   } catch (e) {
-    console.log('获取比赛列表失败');
+    USER_DEBUG_LOG('获取比赛列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -291,10 +312,10 @@ export async function apiContestsListAll(pageSize: number): Promise<(ContestsLis
       }
       offset += pageSize;
     }
-    console.log('获取全部比赛列表成功');
+    USER_DEBUG_LOG('获取全部比赛列表成功', undefined, USER_DEBUG_LOG_TYPE.SUCCESS);
     return contestsListsAll;
   } catch (e) {
-    console.log('获取全部比赛列表失败');
+    USER_DEBUG_LOG('获取全部比赛列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -312,15 +333,12 @@ export async function apiContestDetail(contestId: number): Promise<ContestDetail
       format(objFormatUrl.contest, { cid: contestId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const contestDetail: ContestDetailReturnInterface = ret.data as ContestDetailReturnInterface;
-    console.log('获取比赛详情成功');
+    USER_DEBUG_LOG('获取比赛详情成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return contestDetail;
   } catch (e) {
-    console.log('获取比赛详情失败');
+    USER_DEBUG_LOG('获取比赛详情失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -338,15 +356,12 @@ export async function apiContestAdminDetail(contestId: number): Promise<ContestA
       format(objFormatUrl.amdinContest, { cid: contestId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const contestDetail: ContestAdminDetailReturnInterface = ret.data as ContestAdminDetailReturnInterface;
-    console.log('获取比赛（管理员级别）详情成功');
+    USER_DEBUG_LOG('获取比赛（管理员级别）详情成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return contestDetail;
   } catch (e) {
-    console.log('获取比赛（管理员级别）详情失败');
+    USER_DEBUG_LOG('获取比赛（管理员级别）详情失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -373,18 +388,12 @@ export async function apiContestCreate(contestCreate: ContestCreateRequestInterf
       objFormatUrl.contestcreate,
       { method: 'POST', body: formData },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      if (ret.error !== undefined) {
-        ret.error.map((item) => console.log(`${item.name}: ${item.message}`));
-      }
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const ccreateReturn: ContestCreateReturnInterface = ret.data as ContestCreateReturnInterface;
-    console.log('创建比赛成功');
+    USER_DEBUG_LOG('创建比赛成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return ccreateReturn;
   } catch (e) {
-    console.log('创建比赛失败');
+    USER_DEBUG_LOG('创建比赛失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -402,13 +411,10 @@ export async function apiContestDelete(contestId: number): Promise<void> {
       format(objFormatUrl.contestDelete, { cid: contestId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('删除比赛成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('删除比赛成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('删除比赛失败');
+    USER_DEBUG_LOG('删除比赛失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -439,18 +445,12 @@ export async function apiContestEditSave(contestId: number, contestEdit: Contest
       format(objFormatUrl.contestEdit, { cid: contestId }),
       { method: 'POST', body: formData },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      if (ret.error !== undefined) {
-        ret.error.map((item) => console.log(`${item.name}: ${item.message}`));
-      }
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const cESRet: ContestEditSaveReturnInterface = ret.data as ContestEditSaveReturnInterface;
-    console.log('编辑比赛成功');
+    USER_DEBUG_LOG('编辑比赛成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return cESRet;
   } catch (e) {
-    console.log('编辑比赛失败');
+    USER_DEBUG_LOG('编辑比赛失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -470,15 +470,12 @@ export async function apiProblemsList(offset: number, pageSize: number): Promise
       format(objFormatUrl.problemlist, { offset, pageSize }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
+    logAndThrowOnError(ret);
     const problemList = ret.data as ProblemsListReturnInterface;
-    console.log('获取题目列表成功');
+    USER_DEBUG_LOG('获取题目列表成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
     return problemList;
   } catch (e) {
-    console.log('获取题目列表失败');
+    USER_DEBUG_LOG('获取题目列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -504,10 +501,10 @@ export async function apiProblemsListAll(pageSize: number): Promise<(ProblemsLis
       }
       offset += pageSize;
     }
-    console.log('获取全部题目列表成功');
+    USER_DEBUG_LOG('获取全部题目列表成功', undefined, USER_DEBUG_LOG_TYPE.SUCCESS);
     return problemsListAll;
   } catch (e) {
-    console.log('获取全部题目列表失败');
+    USER_DEBUG_LOG('获取全部题目列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -526,13 +523,10 @@ export async function apiContestProblemAdd(contestId: number, problemId: number)
       format(objFormatUrl.contestProblemAdd, { cid: contestId, pid: problemId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('添加比赛题目成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('添加比赛题目成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('添加比赛题目失败');
+    USER_DEBUG_LOG('添加比赛题目失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
@@ -551,13 +545,54 @@ export async function apiContestProblemRemove(contestId: number, problemId: numb
       format(objFormatUrl.contestProblemRemove, { cid: contestId, pid: problemId }),
       { method: 'GET' },
     );
-    if (ret.code !== 0) {
-      console.log(ret.message);
-      throw ret;
-    }
-    console.log('移除比赛题目成功');
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('移除比赛题目成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
-    console.log('移除比赛题目失败');
+    USER_DEBUG_LOG('移除比赛题目失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 为比赛添加用户
+ *
+ * @export
+ * @param {number} contestId
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+export async function apiContestUserAdd(contestId: number, userId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.contestUserAdd, { cid: contestId, uid: userId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('添加比赛用户成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('添加比赛用户失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 将用户从比赛中移除
+ *
+ * @export
+ * @param {number} contestId
+ * @param {number} userId
+ * @returns {Promise<void>}
+ */
+export async function apiContestUserRemove(contestId: number, userId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.contestUserRemove, { cid: contestId, uid: userId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('移除比赛用户成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('移除比赛用户失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }
