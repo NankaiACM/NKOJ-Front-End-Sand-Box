@@ -62,7 +62,7 @@ export default {
       if (cur === Math.ceil(this.data.length / (ps * 1.0))) {
         this.loading = true;
         const i = this.data[this.data.length - 1];
-        const ret = await this.$http.api('ftstatus', { from: i.problem_id, limit: ps * 2 });
+        const ret = await this.$http.api('ftStatus', { from: i.problem_id, limit: ps * 2 });
         this.data = this.data.concat(ret);
         this.loading = false;
       }

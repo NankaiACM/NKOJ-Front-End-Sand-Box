@@ -30,12 +30,17 @@ a-layout#admin-layout
             key="/message/announce",
             @click="$router.push('/message/announce')"
           )
-            span.nav-text 公告
+            span.nav-text 官方公告
           a-menu-item(
             key="/message/whisper",
             @click="$router.push('/message/whisper')"
           )
-            span.nav-text 发送官方私信
+            span.nav-text 官方私信
+          a-menu-item(
+            key="/message/report",
+            @click="$router.push('/message/report')"
+          )
+            span.nav-text 私信举报
         a-sub-menu(key="/contest")
           template(#title)
             FlagOutlined
@@ -50,20 +55,6 @@ a-layout#admin-layout
             @click="$router.push('/contest/append')"
           )
             span.nav-text 添加比赛
-        a-sub-menu(key="/report")
-          template(#title)
-            SafetyCertificateOutlined
-            | 风纪委员会
-          a-menu-item(
-            key="/report/list",
-            @click="() => this.$router.push('/report/list')"
-          )
-            span.nav-text 举报列表
-          a-menu-item(
-            key="/report/todo",
-            @click="$router.push('/report/todo')"
-          )
-            span.nav-text 未处理
         a-sub-menu(key="sub4")
           template(#title)
             CommentOutlined
@@ -151,7 +142,7 @@ a-layout#admin-layout
 import { Vue, Options } from 'vue-class-component';
 import { h } from 'vue';
 import {
-  UserOutlined, FlagOutlined, CommentOutlined, ClusterOutlined, CodeOutlined, SafetyCertificateOutlined,
+  UserOutlined, FlagOutlined, CommentOutlined, ClusterOutlined, CodeOutlined,
 } from '@ant-design/icons-vue';
 import { getAvatarImageSrc } from '@/typescript/objFormatUrl';
 import store from './store';
@@ -166,7 +157,6 @@ import store from './store';
     CommentOutlined,
     ClusterOutlined,
     CodeOutlined,
-    SafetyCertificateOutlined,
     Vnode: {
       functional: true,
       render() {

@@ -1,13 +1,11 @@
 <template lang="pug">
-div
-  a-modal(title="程序需要更新",:visible="needupdata",@ok="needupdata = !needupdata")
-    p 数据量已经超出初期设计，请更新前端程序
-  a-list(:loading="loading",:dataSource="data.list",itemLayout="vertical",:grid="{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 2, xl: 2, xxl:2}")
-    a-list-item(slot="renderItem",slot-scope="item, index")
+a-list(:loading="loading", :dataSource="postsArray", itemLayout="vertical", :grid="{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 2, xl: 2, xxl: 2 }")
+  template(#renderItem="{ item, index }")
+    a-list-item
       a-card
         a-card-meta(:title="item.title")
-          a-avatar(slot="avatar",:src="'http://acm.nankai.edu.cn/api/avatar/' + item.nickname")
-        br
+          template(#avatar)
+            a-avatar(:src="item.avatarSrc")
         pre.
           文章编号：{{ item.post_id }}
           发布者编号：{{ item.user_id }}
@@ -17,27 +15,63 @@ div
           最后活跃时间：{{ item.last_active_date }}
           支持数：{{ item.positive }}
           反对数：{{ item.negative }}
-        a(slot="actions") 掩藏文章
-        a(slot="actions") 恢复文章
-        a(slot="actions") 显示全文
+        template(#actions)
+          a(@click="removePost(item.post_id)") 删除文章
+          a(@click="recoverPost(item.post_id)") 恢复文章
+          a(:href="item.postSrc", target="_blank") 显示全文
 </template>
-<script>
-export default {
-  data() {
-    return {
-      data: [],
-      needupdata: false,
-      loading: true,
-    };
-  },
+<script lang="ts">
+import { apiDiscussListAll, apiPostRecover, apiPostRemove } from '@/typescript/api';
+import { getAvatarImageSrc, getDiscussUrl } from '@/typescript/objFormatUrl';
+import { Vue } from 'vue-class-component';
+
+interface PostCard extends DiscussListPostEntity {
+  avatarSrc: string;
+  postSrc: string;
+}
+
+export default class extends Vue {
+  postsArray = [] as Array<PostCard>;
+
+  loading = false;
+
   mounted() {
     this.$nextTick(async () => {
-      this.data = await this.$http.api('discuss0');
-      this.loading = false;
-      if (this.data.is_end !== true) {
-        this.needupdata = true;
-      }
+      await this.loadData();
     });
-  },
-};
+  }
+
+  async loadData() {
+    this.loading = true;
+    try {
+      this.postsArray = (await apiDiscussListAll(20)).map((item) => {
+        const nItem = item as PostCard;
+        nItem.avatarSrc = getAvatarImageSrc(item.user_id);
+        nItem.postSrc = getDiscussUrl(item.post_id);
+        return nItem;
+      });
+    } catch (e) {
+      // do nothing
+    }
+    this.loading = false;
+  }
+
+  async removePost(postId: number) {
+    try {
+      await apiPostRemove(postId);
+    } catch (e) {
+      // do nothing
+    }
+    await this.loadData();
+  }
+
+  async recoverPost(postId: number) {
+    try {
+      await apiPostRecover(postId);
+    } catch (e) {
+      // do nothing
+    }
+    await this.loadData();
+  }
+}
 </script>

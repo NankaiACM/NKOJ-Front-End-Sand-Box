@@ -96,7 +96,7 @@ function logAndThrowOnError(ret: ApiReturn) {
       str += convertErrorInterfaceToString(ret.error);
     }
   }
-  USER_DEBUG_LOG(str, ret);
+  USER_DEBUG_LOG(str, ret, USER_DEBUG_LOG_TYPE.FAILURE);
   throw ret;
 }
 
@@ -128,7 +128,7 @@ export async function apiMessageAnnouncement(): Promise<AnnouncementReturnInterf
  */
 export async function apiMessageAll(body: MessageRequestInterface): Promise<void> {
   try {
-    const ret: ApiReturn = await fetchBase(objFormatUrl.messageall, { method: 'POST', body: JSON.stringify(body) });
+    const ret: ApiReturn = await fetchBase(objFormatUrl.messageAll, { method: 'POST', body: JSON.stringify(body) });
     logAndThrowOnError(ret);
     USER_DEBUG_LOG('发送公告成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
@@ -146,7 +146,7 @@ export async function apiMessageAll(body: MessageRequestInterface): Promise<void
  */
 export async function apiMessageWithdraw(messageId: number): Promise<void> {
   try {
-    const ret: ApiReturn = await fetchBase(format(objFormatUrl.withdrawannounce, { mid: messageId }), { method: 'GET' });
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.withdrawAnnounce, { mid: messageId }), { method: 'GET' });
     logAndThrowOnError(ret);
     USER_DEBUG_LOG('删除公告成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
@@ -189,7 +189,7 @@ export async function apiWhisper(whisper: AdminWhisperRequestInterface): Promise
 export async function apiUserInformation(userId: number | string): Promise<UserInformationReturnInterface> {
   try {
     const ret: ApiReturn = await fetchBase(
-      format(objFormatUrl.userplus, { uid: userId }),
+      format(objFormatUrl.userPlus, { uid: userId }),
       { method: 'GET' },
     );
     logAndThrowOnError(ret);
@@ -278,7 +278,7 @@ export async function apiLogout(): Promise<void> {
 export async function apiContestsList(offset: number, pageSize: number): Promise<ContestsListReturnInterface> {
   try {
     const ret: ApiReturn = await fetchBase(
-      format(objFormatUrl.contestslistrange, { offset, pageSize }),
+      format(objFormatUrl.contestsListRange, { offset, pageSize }),
       { method: 'GET' },
     );
     logAndThrowOnError(ret);
@@ -385,7 +385,7 @@ export async function apiContestCreate(contestCreate: ContestCreateRequestInterf
   formData.append('description', contestCreate.description);
   try {
     const ret: ApiReturn = await fetchBase(
-      objFormatUrl.contestcreate,
+      objFormatUrl.contestCreate,
       { method: 'POST', body: formData },
     );
     logAndThrowOnError(ret);
@@ -467,7 +467,7 @@ export async function apiContestEditSave(contestId: number, contestEdit: Contest
 export async function apiProblemsList(offset: number, pageSize: number): Promise<ProblemsListReturnInterface> {
   try {
     const ret: ApiReturn = await fetchBase(
-      format(objFormatUrl.problemlist, { offset, pageSize }),
+      format(objFormatUrl.problemsList, { offset, pageSize }),
       { method: 'GET' },
     );
     logAndThrowOnError(ret);
@@ -593,6 +593,198 @@ export async function apiContestUserRemove(contestId: number, userId: number): P
     USER_DEBUG_LOG('移除比赛用户成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
   } catch (e) {
     USER_DEBUG_LOG('移除比赛用户失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 获取全部举报列表
+ *
+ * @export
+ * @returns {Promise<Array<ReportReturnInterface>>}
+ */
+export async function apiReportAll(): Promise<Array<ReportReturnInterface>> {
+  try {
+    const ret: ApiReturn = await fetchBase(objFormatUrl.reportList, { method: 'GET' });
+    logAndThrowOnError(ret);
+    const reportAll = ret.data as Array<ReportReturnInterface>;
+    USER_DEBUG_LOG('获取举报列表成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return reportAll;
+  } catch (e) {
+    USER_DEBUG_LOG('获取举报列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 管理员认可用户对私信的举报
+ *
+ * @export
+ * @param {number} reportId
+ * @returns {Promise<void>}
+ */
+export async function apiReportApprove(reportId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.reportApprove, { rid: reportId }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('认可用户私信举报成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('认可用户私信举报失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 管理员拒绝用户对私信的举报
+ *
+ * @export
+ * @param {number} reportId
+ * @returns {Promise<void>}
+ */
+export async function apiReportDecline(reportId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.reportDecline, { rid: reportId }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('拒绝用户私信举报成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('拒绝用户私信举报失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 获取讨论列表，pageSize 最大为 50
+ *
+ * @export
+ * @param {number} offset
+ * @param {number} pageSize
+ * @returns {Promise<DiscussListReturnInterface>}
+ */
+export async function apiDiscussList(offset: number, pageSize: number): Promise<DiscussListReturnInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.discuss0, { offset, pageSize }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    const problemList = ret.data as DiscussListReturnInterface;
+    USER_DEBUG_LOG('获取讨论列表成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return problemList;
+  } catch (e) {
+    USER_DEBUG_LOG('获取讨论列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 获取全部的讨论列表，pageSize 最大为 50
+ *
+ * @export
+ * @param {number} pageSize
+ * @returns {Promise<(DiscussListPostEntity)[]>}
+ */
+export async function apiDiscussListAll(pageSize: number): Promise<(DiscussListPostEntity)[]> {
+  try {
+    let offset = 0;
+    let discussListAll = [] as Array<DiscussListPostEntity>;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      // eslint-disable-next-line no-await-in-loop
+      const discussList = await apiDiscussList(offset, pageSize);
+      discussListAll = discussListAll.concat(discussList.list as Array<DiscussListPostEntity>);
+      if (discussList.is_end) {
+        break;
+      }
+      offset += pageSize;
+    }
+    USER_DEBUG_LOG('获取全部讨论列表成功', undefined, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return discussListAll;
+  } catch (e) {
+    USER_DEBUG_LOG('获取全部讨论列表失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 删除 discuss 区的文章
+ *
+ * @export
+ * @param {number} postId
+ * @returns {Promise<void>}
+ */
+export async function apiPostRemove(postId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.postRemove, { pid: postId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('删除文章成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('删除文章失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 恢复文章
+ *
+ * @export
+ * @param {number} postId
+ * @returns {Promise<void>}
+ */
+export async function apiPostRecover(postId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.postRecover, { pid: postId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('恢复文章成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('恢复文章失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 删除文章的评论
+ *
+ * @export
+ * @param {number} postCommentId
+ * @returns {Promise<void>}
+ */
+export async function apiPostCommentRemove(postCommentId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.postCommentRemove, { pcid: postCommentId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('删除文章评论成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('删除文章评论失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 恢复文章的评论
+ *
+ * @export
+ * @param {number} postCommentId
+ * @returns {Promise<void>}
+ */
+export async function apiPostCommentRecover(postCommentId: number): Promise<void> {
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.postCommentRecover, { pcid: postCommentId }),
+      { method: 'GET' },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('恢复文章评论成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('恢复文章评论失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
     throw e;
   }
 }

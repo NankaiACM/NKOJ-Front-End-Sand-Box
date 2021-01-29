@@ -14,12 +14,16 @@ const router = createRouter({
     redirect: '/message/announce',
   }, {
     path: '/message/announce',
-    name: '公告',
+    name: '官方公告',
     component: () => import(/* webpackChunkName: "_message_announce" */ './message/announce.vue'),
   }, {
     path: '/message/whisper',
-    name: '发送官方私信',
+    name: '官方私信',
     component: () => import(/* webpackChunkName: "_message_whisper" */ './message/whisper.vue'),
+  }, {
+    path: '/message/report',
+    name: '私信举报',
+    component: () => import(/* webpackChunkName: "_message_report" */ './message/report.vue'),
   }, {
     path: '/contest',
     name: '比赛管理',
@@ -42,18 +46,6 @@ const router = createRouter({
     name: '编辑比赛',
     props: (route) => ({ contestId: Number(route.params.contestId) }),
     component: () => import(/* webpackChunkName: "_contest_edit" */ './contest/edit/edit.vue'),
-  }, {
-    path: '/report',
-    name: '风纪委员会',
-    redirect: '/report/list',
-  }, {
-    path: '/report/list',
-    name: '举报列表',
-    component: () => import(/* webpackChunkName: "_report_list" */ './report/list.vue'),
-  }, {
-    path: '/report/todo',
-    name: '待处理',
-    component: () => import(/* webpackChunkName: "_report_todo" */ './report/todo.vue'),
   }, {
     path: '/discuss',
     name: '讨论区管理',

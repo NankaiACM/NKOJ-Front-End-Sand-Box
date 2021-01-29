@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  div {{ userMessage }}
+  div(style="white-space: pre-wrap; overflow: auto;") {{ userMessage }}
   a-button(type="link", @click="showDebugMessage = !showDebugMessage") 调试信息 {{ new Date().toLocaleString() }}
   pre(v-show="showDebugMessage", v-html="debugMessage", style="max-height: 600px;")
 </template>

@@ -12,7 +12,7 @@ interface Debug {
 interface ApiReturn {
   code: number;
   message: string;
-  data?: (AnnouncementReturnInterface)[] | UserInformationReturnInterface | ContestsListReturnInterface | ContestDetailReturnInterface | ContestCreateReturnInterface | ProblemsListReturnInterface | null;
+  data?: (AnnouncementReturnInterface)[] | UserInformationReturnInterface | ContestsListReturnInterface | ContestDetailReturnInterface | ContestCreateReturnInterface | ProblemsListReturnInterface | Array<ReportReturnInterface> | null;
   error?: (ErrorInterface)[] | ErrorInterface;
 }
 
@@ -210,4 +210,33 @@ interface ContestAdminDetailProblemEntity {
 interface ContestAdminDetailParticipantsEntity {
   user_id: number;
   nickname: string;
+}
+
+interface ReportReturnInterface {
+  report_id: number;
+  reporter: number;
+  reportee: number;
+  type: number;
+  which: number;
+  handler?: number | null;
+  result?: boolean | null;
+  when: string;
+}
+
+interface DiscussListReturnInterface {
+  requested: number;
+  served: number;
+  is_end: boolean;
+  list?: (DiscussListPostEntity)[] | null;
+}
+interface DiscussListPostEntity {
+  post_id: number;
+  user_id: number;
+  nickname?: string | null;
+  title: string;
+  since: string;
+  last_active_date: string;
+  last_active_user?: number | null;
+  positive: number;
+  negative: number;
 }

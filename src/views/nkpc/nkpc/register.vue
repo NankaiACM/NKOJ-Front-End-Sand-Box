@@ -88,7 +88,7 @@ export default {
         return;
       }
       try {
-        const res = await this.$http.objpost('contestsign', '', {
+        const res = await this.$http.objpost('contestSign', '', {
           gender: this.gender,
           institute: this.college,
           phone: this.phone,
