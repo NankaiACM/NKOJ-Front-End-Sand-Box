@@ -44,6 +44,18 @@ enum ContestRule {
   OI = 'oi',
 }
 
+enum SpecialJudgeStringRule {
+  NONE = '0',
+  COMPARE = '1',
+  INTERACTIVE = '2',
+}
+
+enum SpecialJudgeNumberRule {
+  NONE = 0,
+  COMPARE = 1,
+  INTERACTIVE = 2,
+}
+
 export {
-  LangMap, LangHash, Lang2Code, ContestRule,
+  LangMap, LangHash, Lang2Code, ContestRule, SpecialJudgeStringRule, SpecialJudgeNumberRule,
 };

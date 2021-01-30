@@ -788,3 +788,110 @@ export async function apiPostCommentRecover(postCommentId: number): Promise<void
     throw e;
   }
 }
+
+/**
+ * 管理员添加题目，仅包含基础数据，不包含输入输出和 Special Judge 配置
+ *
+ * @export
+ * @param {ProblemAddOrUpdateRequestInterface} problemData
+ * @returns {Promise<ProblemAddOrUpdateReturnInterface>}
+ */
+export async function apiProblemAdd(problemData: ProblemAddOrUpdateRequestInterface): Promise<ProblemAddOrUpdateReturnInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(objFormatUrl.problemAdd, { method: 'POST', body: JSON.stringify(problemData) });
+    logAndThrowOnError(ret);
+    const pARet = ret.data as ProblemAddOrUpdateReturnInterface;
+    USER_DEBUG_LOG('添加题目成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return pARet;
+  } catch (e) {
+    USER_DEBUG_LOG('添加题目失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 管理员修改题目，仅包含基础数据，不包含输入输出数据和 Special Judge 配置
+ *
+ * @export
+ * @param {problemId} Number
+ * @param {ProblemAddOrUpdateRequestInterface} problemData
+ * @returns {Promise<ProblemAddOrUpdateReturnInterface>}
+ */
+export async function apiProblemUpdate(problemId: number, problemData: ProblemAddOrUpdateRequestInterface): Promise<ProblemAddOrUpdateReturnInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.problemUpdate, { pid: problemId }), { method: 'POST', body: JSON.stringify(problemData) });
+    logAndThrowOnError(ret);
+    const pARet = ret.data as ProblemAddOrUpdateReturnInterface;
+    USER_DEBUG_LOG('修改题目成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return pARet;
+  } catch (e) {
+    USER_DEBUG_LOG('修改题目失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 更新题目的 Special Judge 数据
+ *
+ * @export
+ * @param {number} problemId
+ * @param {ProblemSPJUpdateRequestInterface} spjData
+ * @returns {Promise<void>}
+ */
+export async function apiProblemSPJUpdate(problemId: number, spjData: ProblemSPJUpdateRequestInterface): Promise<void> {
+  const formData = new FormData();
+  formData.append('file', spjData.file);
+  formData.append('lang', String(spjData.lang));
+  try {
+    const ret: ApiReturn = await fetchBase(
+      format(objFormatUrl.problemSpecialJudgeUpdate, { pid: problemId }),
+      { method: 'POST', body: formData },
+    );
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('更新 Special Judge 数据成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('更新 Special Judge 数据失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 更新题目输入输出数据
+ *
+ * @export
+ * @param {number} problemId
+ * @param {ProblemIODataUpdateRequestInterface} ioData
+ * @returns {Promise<void>}
+ */
+export async function apiProblemIODataUpdate(problemId: number, ioData: ProblemIODataUpdateRequestInterface): Promise<void> {
+  const formData = new FormData();
+  formData.append('file', ioData.file);
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.problemIODataUpdate, { pid: problemId }), { method: 'POST', body: formData });
+    logAndThrowOnError(ret);
+    USER_DEBUG_LOG('更新题目输入输出数据成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+  } catch (e) {
+    USER_DEBUG_LOG('更新题目输入输出数据失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 获取题目信息
+ *
+ * @export
+ * @param {number} problemId
+ * @returns {Promise<ProblemInformationReturnInterface>}
+ */
+export async function apiProblemInformation(problemId: number): Promise<ProblemInformationReturnInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.problem, { pid: problemId }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    const pIRet = ret.data as ProblemInformationReturnInterface;
+    USER_DEBUG_LOG('获取题目信息成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return pIRet;
+  } catch (e) {
+    USER_DEBUG_LOG('获取题目信息失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}

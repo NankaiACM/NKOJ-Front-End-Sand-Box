@@ -2,6 +2,9 @@ interface ErrorInterface {
   name: string;
   message: string;
   debug: Debug;
+  compiler?: string;
+  success?: boolean;
+  target?: string;
 }
 interface Debug {
   value?: string;
@@ -12,7 +15,17 @@ interface Debug {
 interface ApiReturn {
   code: number;
   message: string;
-  data?: (AnnouncementReturnInterface)[] | UserInformationReturnInterface | ContestsListReturnInterface | ContestDetailReturnInterface | ContestCreateReturnInterface | ProblemsListReturnInterface | Array<ReportReturnInterface> | null;
+  data?: (AnnouncementReturnInterface)[] |
+    UserInformationReturnInterface |
+    ContestsListReturnInterface |
+    ContestDetailReturnInterface |
+    ContestCreateReturnInterface |
+    ProblemsListReturnInterface |
+    Array<ReportReturnInterface> |
+    ProblemAddOrUpdateReturnInterface |
+    ProblemIODataUpdateReturnInterface |
+    ProblemInformationReturnInterface |
+    null;
   error?: (ErrorInterface)[] | ErrorInterface;
 }
 
@@ -239,4 +252,76 @@ interface DiscussListPostEntity {
   last_active_user?: number | null;
   positive: number;
   negative: number;
+}
+
+interface ProblemAddOrUpdateRequestInterface {
+  title: string;
+  cases: number;
+  time_limit: number;
+  memory_limit: number;
+  type: string;
+  special_judge: number;
+  detail_judge: boolean;
+  tags?: (string)[] | null;
+  description: string;
+  input: string;
+  output: string;
+  sample_input: string;
+  sample_output: string;
+  hint: string;
+  level: number;
+  // 以下两个字段似乎在后端的迭代中取消了
+  // max_output: number;
+  // max_core: number;
+}
+
+interface ProblemAddOrUpdateReturnInterface {
+  problem_id: number;
+  filename: string;
+  content: string;
+}
+
+interface ProblemSPJUpdateRequestInterface {
+  file: File;
+  lang: number;
+}
+
+interface ProblemIODataUpdateRequestInterface {
+  file: File;
+}
+
+interface ProblemIODataUpdateReturnInterface {
+  files: number;
+}
+
+interface ProblemInformationReturnInterface {
+  problem_id: number;
+  title: string;
+  ac: number;
+  all: number;
+  special_judge: number;
+  detail_judge: boolean;
+  cases: number;
+  time_limit: number;
+  memory_limit: number;
+  level: number;
+  contest_id?: null;
+  tags?: (ProblemTagsEntity)[] | null;
+  keys?: (string)[] | null;
+  content: ProblemContent;
+}
+interface ProblemTagsEntity {
+  id: number;
+  official: boolean;
+  p: number;
+  n: number;
+  name: string;
+}
+interface ProblemContent {
+  description: string;
+  input: string;
+  output: string;
+  sample_input: string;
+  sample_output: string;
+  hint: string;
 }

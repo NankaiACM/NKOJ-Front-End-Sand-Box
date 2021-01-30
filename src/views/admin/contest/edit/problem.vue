@@ -89,7 +89,6 @@ export default class extends Vue.with(Props) {
 
   // eslint-disable-next-line class-methods-use-this
   change(targetKeys: Array<string>, direction: string, moveKeys: Array<string>) {
-    console.log(direction);
     this.targetArray = targetKeys;
     if (direction === 'right') {
       // 添加到比赛中

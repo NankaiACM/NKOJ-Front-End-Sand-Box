@@ -65,6 +65,10 @@ const admin = {
   contestDelete: '/admin/contest/remove/{cid}',
   contestCreate: '/admin/contest',
   contestEdit: '/admin/contest/{cid}',
+  problemAdd: '/admin/problem/add',
+  problemUpdate: '/admin/problem/update/{pid}',
+  problemSpecialJudgeUpdate: '/admin/problem/spj/{pid}',
+  problemIODataUpdate: '/admin/problem/data/{pid}',
 };
 
 const discuss = {

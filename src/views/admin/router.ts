@@ -75,6 +75,11 @@ const router = createRouter({
     name: '添加题目',
     component: () => import(/* webpackChunkName: "_problem_append" */ './problem/append.vue'),
   }, {
+    path: '/problem/edit/:problemId/:tabName',
+    name: '题目编辑',
+    props: (route) => ({ problemId: Number(route.params.problemId), tabName: route.params.tabName }),
+    component: () => import(/* webpackChunkName: "_problem_edit" */ './problem/modify.vue'),
+  }, {
     path: '/signin',
     name: '登录',
     component: () => import(/* webpackChunkName: "_signin" */ './signin/form.vue'),

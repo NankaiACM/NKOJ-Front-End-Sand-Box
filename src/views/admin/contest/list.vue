@@ -1,16 +1,16 @@
 <template lang="pug">
-a-table(:data-source="contestArray", rowKey="contest_id")
+a-table(:data-source="contestArray", :rowKey="(item) => item.contest_id")
   a-table-column(key="contest_id", title="Contest ID", data-index="contest_id")
   a-table-column(key="title", title="Title", data-index="title")
   a-table-column(key="start", title="Start", data-index="during")
-    template(v-slot="{text}")
+    template(#default="{ text, record }")
       span {{ JSON.parse(text)[0] }}
   a-table-column(key="end", title="End", data-index="during")
-    template(v-slot="{text}")
+    template(#default="{ text, record }")
       span {{ JSON.parse(text)[1] }}
   a-table-column(key="perm", title="Perm", data-index="perm")
   a-table-column(key="private", title="Private", data-index="private")
-    template(v-slot="{ text }")
+    template(#default="{ text, record }")
       span {{ text }}
   a-table-column(key="action", title="Action")
     template(#default="{ text, record }")
@@ -41,7 +41,6 @@ export default class ContestList extends Vue {
     this.$nextTick(async () => {
       try {
         this.contestArray = await apiContestsListAll(this.pageSize);
-        console.log(this.contestArray);
       } catch (e) {
         // do nothing
       }

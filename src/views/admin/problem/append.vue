@@ -1,13 +1,40 @@
 <template lang="pug">
-div
-  a-row.n-margin(:gutter="16")
-    a-col(span="12",offset="5")
-      a-tooltip
-        a-input(placeholder="挑一个未被使用的题目编号")
-    a-col
-      a-button 转到编辑
-  a-row
-    a-col(span="12",offset="5")
-      a-card
-        p 这里是一张可爱的图
+a-space(style="width: 100%;", direction="vertical")
+  a-alert(message="添加题目后请在题目编辑中为题目添加输入输出数据和编辑 Special Judge 配置.")
+  ProblemEdit(@problemDataSubmit="problemAdd")
 </template>
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import { ProblemEditClass } from '@/typescript/class';
+import { Modal } from 'ant-design-vue';
+import { apiProblemAdd } from '@/typescript/api';
+import ProblemEdit from './edit.vue';
+
+@Options({
+  components: {
+    ProblemEdit,
+  },
+})
+export default class extends Vue {
+  // eslint-disable-next-line class-methods-use-this
+  async problemAdd(problemData: ProblemEditClass) {
+    try {
+      const pARet = await apiProblemAdd(problemData);
+      Modal.confirm({
+        title: '下一步',
+        content: `题目 ${pARet.problem_id} 已创建, 请选择下一步`,
+        okText: '编辑 Special Judge 配置',
+        cancelText: '添加输入输出数据',
+        onOk: () => {
+          this.$router.push({ name: '题目编辑', params: { problemId: pARet.problem_id, tabName: 'sp' } });
+        },
+        onCancel: () => {
+          this.$router.push({ name: '题目编辑', params: { problemId: pARet.problem_id, tabName: 'io' } });
+        },
+      });
+    } catch (e) {
+      // do nothing
+    }
+  }
+}
+</script>
