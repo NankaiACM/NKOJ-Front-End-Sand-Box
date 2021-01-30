@@ -87,6 +87,8 @@ const PROBLEM_BASE_URL = '//acm.nankai.edu.cn/problem';
 
 const DISCUSS_BASE_URL = '//acm.nankai.edu.cn/discuss';
 
+const DETAIL_BASE_URL = '//acm.nankai.edu.cn/details';
+
 // TODO: 构建允许管理员由私信 ID 获取私信内容的 api
 // const WHISPER_BASE_URL = '//';
 // export function getWhisperUrl(): string {}
@@ -109,6 +111,10 @@ export function getProblemUrl(problemId: number): string {
 
 export function getDiscussUrl(discussId: number): string {
   return `${DISCUSS_BASE_URL}/${discussId}`;
+}
+
+export function getDetailUrl(solutionId: number): string {
+  return `${DETAIL_BASE_URL}/${solutionId}`;
 }
 
 export default {

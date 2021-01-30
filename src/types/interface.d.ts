@@ -6,6 +6,7 @@ interface ErrorInterface {
   success?: boolean;
   target?: string;
 }
+
 interface Debug {
   value?: string;
   location?: string;
@@ -25,6 +26,8 @@ interface ApiReturn {
     ProblemAddOrUpdateReturnInterface |
     ProblemIODataUpdateReturnInterface |
     ProblemInformationReturnInterface |
+    Array<StatusStreamReturnInterfacee> |
+    RejudgeReturnInterface |
     null;
   error?: (ErrorInterface)[] | ErrorInterface;
 }
@@ -69,12 +72,12 @@ interface UserInformationReturnInterface {
   current_badge: number;
   removed: boolean;
   credits: number;
-  perm: Perm;
+  perm: UserInformationPerm;
   ac?: (number)[] | null;
   all?: (number)[] | null;
 }
 
-interface Perm {
+interface UserInformationPerm {
   LOGIN: string;
   COMMENT: string;
   REPLY_POST: string;
@@ -242,6 +245,7 @@ interface DiscussListReturnInterface {
   is_end: boolean;
   list?: (DiscussListPostEntity)[] | null;
 }
+
 interface DiscussListPostEntity {
   post_id: number;
   user_id: number;
@@ -310,6 +314,7 @@ interface ProblemInformationReturnInterface {
   keys?: (string)[] | null;
   content: ProblemContent;
 }
+
 interface ProblemTagsEntity {
   id: number;
   official: boolean;
@@ -317,6 +322,7 @@ interface ProblemTagsEntity {
   n: number;
   name: string;
 }
+
 interface ProblemContent {
   description: string;
   input: string;
@@ -324,4 +330,58 @@ interface ProblemContent {
   sample_input: string;
   sample_output: string;
   hint: string;
+}
+
+interface StatusStreamReturnInterfacee {
+  solution_id: number;
+  user_id: number;
+  problem_id: number;
+  status_id: number;
+  language: number;
+  code_size: number;
+  time: number;
+  memory: number;
+  when: string;
+  ipaddr_id: number;
+  shared: boolean;
+  contest_id?: null;
+  score: number;
+  detail?: (StatusStreamDetailEntity)[] | null;
+  compile_info: string;
+  msg_short: string;
+  msg_en: string;
+  msg_cn: string;
+  nickname: string;
+}
+
+interface StatusStreamDetailEntity {
+  time: number;
+  memory: number;
+  result: string;
+  status: number;
+  exitcode: number;
+  extra?: string | null;
+  signal?: number | null;
+  signal_str?: string | null;
+}
+
+interface RejudgeReturnInterface {
+  json: RejudgeJsonEntity;
+}
+
+interface RejudgeJsonEntity {
+  compiler: string;
+  detail?: (RejudgeJsonDetailEntity)[] | null;
+  memory: number;
+  result: string;
+  status: number;
+  time: number;
+}
+
+interface RejudgeJsonDetailEntity {
+  exitcode: number;
+  memory: number;
+  result: string;
+  status: number;
+  time: number;
 }

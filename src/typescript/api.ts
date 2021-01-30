@@ -895,3 +895,63 @@ export async function apiProblemInformation(problemId: number): Promise<ProblemI
     throw e;
   }
 }
+
+/**
+ * 获取最近时间段的评测信息
+ *
+ * @export
+ * @returns {Promise<Array<StatusStreamReturnInterfacee>>}
+ */
+export async function apiStatusStream(): Promise<Array<StatusStreamReturnInterfacee>> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.status, { querryString: '' }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    const sSRet = ret.data as Array<StatusStreamReturnInterfacee>;
+    USER_DEBUG_LOG('获取评测信息成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return sSRet;
+  } catch (e) {
+    USER_DEBUG_LOG('获取评测信息失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 获取更多的评测信息
+ *
+ * @export
+ * @param {number} from
+ * @param {number} limit
+ * @returns {Promise<Array<StatusStreamReturnInterfacee>>}
+ */
+export async function apiStatusRangeStream(from: number, limit: number): Promise<Array<StatusStreamReturnInterfacee>> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.ftStatus, { from, limit, querryString: '' }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    const sSRet = ret.data as Array<StatusStreamReturnInterfacee>;
+    USER_DEBUG_LOG('获取评测信息成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return sSRet;
+  } catch (e) {
+    USER_DEBUG_LOG('获取评测信息失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
+
+/**
+ * 重新评测某个 Solution
+ *
+ * @export
+ * @param {number} solutionId
+ * @returns {Promise<RejudgeReturnInterface>}
+ */
+export async function apiRejudge(solutionId: number): Promise<RejudgeReturnInterface> {
+  try {
+    const ret: ApiReturn = await fetchBase(format(objFormatUrl.rejudge, { sid: solutionId }), { method: 'GET' });
+    logAndThrowOnError(ret);
+    const rRet = ret.data as RejudgeReturnInterface;
+    USER_DEBUG_LOG('重新评测成功', ret, USER_DEBUG_LOG_TYPE.SUCCESS);
+    return rRet;
+  } catch (e) {
+    USER_DEBUG_LOG('重新评测失败', e, USER_DEBUG_LOG_TYPE.FAILURE);
+    throw e;
+  }
+}
