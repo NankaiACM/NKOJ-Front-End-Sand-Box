@@ -1,10 +1,10 @@
 import { apiSelfProfile } from '@/typescript/api';
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from './store';
 
 const router = createRouter({
-  history: createWebHistory(/* process.env.BASE_URL */),
-  routes: [{ // 注意：列出route的顺序应该是父路径在前，这关系到面包屑导航的索引顺序
+  history: createWebHashHistory('/admin'),
+  routes: [{ // 注意：列出route的顺序应该是父路径在前, 这关系到面包屑导航的索引顺序
     path: '/',
     redirect: '/message/announce',
     name: '首页',

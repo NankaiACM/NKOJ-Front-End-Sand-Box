@@ -10,7 +10,7 @@ import objFormatUrl, { API_BASE_URL } from './objFormatUrl';
  * @param {RequestInit} [options]
  * @returns
  */
-function fetchBase(url: RequestInfo, options?: RequestInit) {
+export function fetchBase(url: RequestInfo, options?: RequestInit) {
   const defaultOptions: RequestInit = {
     credentials: 'include',
   };
@@ -25,7 +25,7 @@ function fetchBase(url: RequestInfo, options?: RequestInit) {
         'Content-Type': 'application/json;charset=utf-8',
         ...newOptions.headers,
       };
-      // JSON 的字符串化在进入函数前进行好，此处延用 RequestInit 数据类型的要求
+      // JSON 的字符串化在进入函数前进行好, 此处延用 RequestInit 数据类型的要求
       // newOptions.body = JSON.stringify(newOptions.body);
     } else {
       newOptions.headers = {
@@ -420,7 +420,7 @@ export async function apiContestDelete(contestId: number): Promise<void> {
 }
 
 /**
- * 编辑比赛，和创建比赛使用的是同一个后端接口
+ * 编辑比赛, 和创建比赛使用的是同一个后端接口
  *
  * @export
  * @param {ContestEditSaveRequestInterface} contestEdit
@@ -436,7 +436,7 @@ export async function apiContestEditSave(contestId: number, contestEdit: Contest
   formData.append('rule', contestEdit.rule);
   formData.append('extra', String(contestEdit.extra));
   formData.append('description', contestEdit.description);
-  // 当且仅当上传新的文件，方才更新 file 字段
+  // 当且仅当上传新的文件, 方才更新 file 字段
   if (contestEdit.file) {
     formData.append('file', contestEdit.file as File);
   }
@@ -653,7 +653,7 @@ export async function apiReportDecline(reportId: number): Promise<void> {
 }
 
 /**
- * 获取讨论列表，pageSize 最大为 50
+ * 获取讨论列表, pageSize 最大为 50
  *
  * @export
  * @param {number} offset
@@ -677,7 +677,7 @@ export async function apiDiscussList(offset: number, pageSize: number): Promise<
 }
 
 /**
- * 获取全部的讨论列表，pageSize 最大为 50
+ * 获取全部的讨论列表, pageSize 最大为 50
  *
  * @export
  * @param {number} pageSize
@@ -790,7 +790,7 @@ export async function apiPostCommentRecover(postCommentId: number): Promise<void
 }
 
 /**
- * 管理员添加题目，仅包含基础数据，不包含输入输出和 Special Judge 配置
+ * 管理员添加题目, 仅包含基础数据, 不包含输入输出和 Special Judge 配置
  *
  * @export
  * @param {ProblemAddOrUpdateRequestInterface} problemData
@@ -810,7 +810,7 @@ export async function apiProblemAdd(problemData: ProblemAddOrUpdateRequestInterf
 }
 
 /**
- * 管理员修改题目，仅包含基础数据，不包含输入输出数据和 Special Judge 配置
+ * 管理员修改题目, 仅包含基础数据, 不包含输入输出数据和 Special Judge 配置
  *
  * @export
  * @param {problemId} Number

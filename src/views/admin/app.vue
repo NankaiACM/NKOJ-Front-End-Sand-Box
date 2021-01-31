@@ -92,8 +92,8 @@ a-layout#admin-layout
             v-else-if="broutes && broutes.includes(route)",
             :to="'/' + paths.join('/')"
           ) {{ route.name }}
-      a-layout-content(
-        style="background: white; padding: 24px; overflow: visiable"
+      a-layout-content.admin-content(
+        style="background: white; padding: 24px; overflow: visible; min-height: unset !important;"
       )
         router-view
       a-layout-footer.n-tcenter NKOJ Admin ©2019 Created by NKOJ Development Department
@@ -103,34 +103,27 @@ a-layout#admin-layout
         vnode(:vnode="item")
 </template>
 
-<style lang="scss" scoped>
+<style lang="css" scoped>
 #admin-layout {
   padding: 0;
   margin: 0;
   width: 100vw;
-  // min-height: initial !important;
   height: 100vh;
+}
 
-  .header {
-    .logobox {
-      height: 64px;
-      width: 200px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      float: left;
+#admin-layout .header .logobox {
+  height: 64px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+}
 
-      .nkojadmin {
-        width: 150px;
-        vertical-align: middle;
-        object-fit: cover;
-      }
-    }
-  }
-
-  .ant-layout-content {
-    min-height: initial !important;
-  }
+#admin-layout .header .logobox .nkojadmin {
+  width: 150px;
+  vertical-align: middle;
+  object-fit: cover;
 }
 
 .fixed-sider {

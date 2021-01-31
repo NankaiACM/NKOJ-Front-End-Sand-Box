@@ -5,7 +5,7 @@
       user-check(ref="usercheck")
         template(v-slot:userok)
           .level
-            .level-left 检查用户状态成功。
+            .level-left 检查用户状态成功.
             .level-right.a.button.is-primary.is-right(@click="$refs.usercheck.close(),\
               $refs.anbox.style.maxHeight='0px',\
               $refs.anbox.style.margin='0'"
@@ -13,7 +13,7 @@
     article.media
       .media-left
         figure.img.is-64o64
-          img.is-loading(:src="`${publicPath}-public/avatar.jpg`")
+          img.is-loading(:src="`${publicPath}img/avatar.jpg`")
       .media-content
         .content
           strong {{annouce.title}}
@@ -33,7 +33,7 @@
           option(
             v-for="(it,index,key) in contest.problems",
             :value="it['problem_id']",:key="index",
-            :class="~submitted.indexOf(it['problem_id']) ?\
+            :class="submitted && (~submitted.indexOf(it['problem_id'])) ?\
               'has-background-warning has-text-grey-dark' : ''"
             ) [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
     .control
@@ -42,7 +42,7 @@
           option(v-for="(it,index,key) in LangMap",:value="it.value") {{it.lang}}
     .control
       button.button.is-primary(@click="codeok = !codeok") {{ codeok ? '关闭' : '我要提交'}}
-      a.button.is-success(:href="`/status/uid=${this.$store.uid}`", target='_blank', v-if="!codeok", style="margin-left: 1rem") 提交记录
+      a.button.is-success(:href="getMyStatusUrl()", target='_blank', v-if="!codeok", style="margin-left: 1rem") 提交记录
     transition(enter-active-class="animated bounceInRight",leave-active-class="animated bounceOutRight")
       .control(v-if="codeok")
         button.button.is-warning(@click="submit()") 提交
@@ -76,7 +76,7 @@
             .tags.has-addons.level-item
               .tag dtj
               .tag(:class="problem['detail_judge'] ? 'is-danger' : 'is-primary'") {{problem['detail_judge']}}
-        td(title="这是假的，还是看题目排序吧") {{problem['level']}}
+        td(title="这是假的, 还是看题目排序吧") {{problem['level']}}
         td {{problem['ac']}}
         td {{problem['all']}}
   .content#markdown-here(v-html="markdown")
@@ -85,20 +85,15 @@
 </template>
 <script>
 import { LangMap } from '@/typescript/constant';
-import markdownIt from 'markdown-it';
-import markdownItMathjax from 'markdown-it-mathjax';
-import markdownItLatex from 'markdown-it-latex';
+import markdownIt from '@/typescript/markdown';
+import store from '@/views/nkpc/store';
 import 'markdown-it-latex/dist/index.css';
-
+import format from 'string-format';
 import pidOrders from '@/typescript/pidOrder';
-
-const markdownit = markdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-});
-markdownit.use(markdownItMathjax);
-markdownit.use(markdownItLatex);
+import {
+  fetchBase, apiContestDetail, apiMessageAnnouncement, apiProblemInformation,
+} from '@/typescript/api';
+import objFormatUrl, { STATUS_BASE_URL } from '@/typescript/objFormatUrl';
 
 export default {
   name: 'nkpccodingpage',
@@ -136,7 +131,7 @@ export default {
     },
     async thisAnnouceExist() {
       try {
-        const res = await this.$http.api('announce');
+        const res = await apiMessageAnnouncement();
         if (res[0]) {
           [this.annouce] = res;
         }
@@ -146,7 +141,7 @@ export default {
     },
     async thisContestExist() {
       try {
-        const res = await this.$http.api('contest', { cid: this.cid });
+        const res = await apiContestDetail(this.cid);
         this.contest = res;
         if (pidOrders[this.cid]) {
           const mp = pidOrders[this.cid];
@@ -155,8 +150,9 @@ export default {
         if (!this.pid) {
           this.$router.push({ name: 'coding', params: { cid: this.cid, pid: res.problems[0].problem_id } });
         }
-        const submitted = await this.$http.api('submitted', { cid: this.cid });
-        this.submitted = submitted;
+        // TODO: move api to api.ts
+        const submitted = (await fetchBase(format(objFormatUrl.submitted, { cid: this.cid }), { method: 'GET' })).data;
+        this.submitted = submitted | [];
       } catch (e) {
         this.$message('获取比赛信息失败', e);
       }
@@ -167,18 +163,25 @@ export default {
       Object.keys(obj).forEach((i) => {
         markdown += `### ${i.replace(/\b\w/g, (l) => l.toUpperCase())}\n${obj[i]}\n`;
       });
-      return markdownit.render(markdown);
+      return markdownIt.render(markdown);
     },
     async submit() {
       if (!this.codeok) return;
       try {
-        const res = await this.$http.objpost('judge', '', {
-          pid: this.pid * 1,
-          lang: this.lang * 1,
-          code: this.code,
+        // TODO: move api to api.ts
+        const res = await fetchBase(objFormatUrl.judge, {
+          method: 'POST',
+          body: JSON.stringify({
+            pid: this.pid * 1,
+            lang: this.lang * 1,
+            code: this.code,
+          }),
         });
-        this.$trace(res.solution_id);
-        // this.$message('提交成功');
+        if (res.code !== 0) {
+          throw res.error;
+        }
+        this.$solutionTrace(res.data.solution_id);
+        this.$message('提交成功');
         this.codeok = false;
       } catch (e) {
         this.$message('提交失败', e);
@@ -196,7 +199,7 @@ export default {
       if (this.mypid !== newpid) this.mypid = newpid;
       try {
         if (!newpid) throw new Error('无法获取题目id');
-        this.problem = await this.$http.api('problem', { pid: newpid });
+        this.problem = await apiProblemInformation(newpid);
         this.markdown = this.thisMarkMathjaxLatexExist(this.problem.content);
       } catch (e) {
         this.$message('获取题目失败', e);
@@ -212,11 +215,14 @@ export default {
     },
     ch() {
       if (document.readyState !== 'complete') {
-        this.$message('<div class="has-text-danger">页面尚未加载完成，为了节约你的流量，请稍后再试，或强制F5刷新。</div>');
+        this.$message('<div class="has-text-danger">页面尚未加载完成, 为了节约你的流量, 请稍后再试, 或强制F5刷新.</div>');
         this.mypid = this.oldpid;
         return;
       }
       this.$router.push({ name: 'coding', params: { cid: this.cid, pid: this.mypid } });
+    },
+    getMyStatusUrl() {
+      return `${STATUS_BASE_URL}/uid=${store.state.user.data.user_id}`;
     },
   },
   mounted() {

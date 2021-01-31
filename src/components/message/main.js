@@ -1,7 +1,7 @@
 export default {
-  install(Vue) {
+  install(app) {
     // eslint-disable-next-line no-param-reassign
-    Vue.prototype.$message = function Notification(html, e) {
+    app.config.globalProperties.$message = function Notification(html, e) {
       if (e instanceof Error) {
       // eslint-disable-next-line no-console
         console.error(e);
@@ -12,7 +12,7 @@ export default {
     };
 
     // eslint-disable-next-line no-param-reassign
-    Vue.prototype.$trace = (sid) => {
+    app.config.globalProperties.$solutionTrace = (sid) => {
       window.postMessage({ type: 'loader', payload: { sid } }, '*');
     };
   },

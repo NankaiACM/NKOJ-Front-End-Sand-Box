@@ -1,12 +1,15 @@
 <script>
 import { setTimeout } from 'timers';
+import format from 'string-format';
+import { fetchBase } from '@/typescript/api';
+import objFormatUrl from '@/typescript/objFormatUrl';
 
 export default {
   name: 'message-block',
   data() {
     return {
       r: {
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        /* eslint-disable  @typescript-eslint/camelcase */
         msg_en: 'Querying',
       },
     };
@@ -14,7 +17,7 @@ export default {
   props: ['id', 'sid'],
   mounted() {
     this.queryResult();
-    // setTimeout(this.deleteSelf, 15000);
+    setTimeout(this.deleteSelf, 15000);
   },
   computed: {
     title() {
@@ -22,7 +25,7 @@ export default {
       return `[${this.r.problem_id}] ${this.r.msg_en}`;
     },
     content() {
-      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time !== undefined ? `<br/> 时间 ${this.r.time} ms，内存 ${this.r.memory} kb` : ''}`;
+      return `提交${this.$props.sid}: ${this.r.msg_cn} ${this.r.time !== undefined ? `<br/> 时间 ${this.r.time} ms, 内存 ${this.r.memory} kb` : ''}`;
     },
     icon() {
       return '<i></i>';
@@ -40,15 +43,22 @@ export default {
       if (this.r.msg_short === 'RU') return;
       this.deleteSelf();
     },
-    queryResult() {
+    async queryResult() {
       const start = performance.now();
-      this.$http.api('detail', { sid: this.sid }).then((r) => {
+      const ret = await fetchBase(format(objFormatUrl.detail, { sid: this.sid }), { method: 'GET' });
+      if (ret.code === 0) {
+        const r = ret.data;
         const gap = performance.now() - start;
-        Object.keys(r).forEach((k) => this.$set(this.r, k, r[k]));
+        // Object.keys(r).forEach((k) => this.$set(this.r, k, r[k]));
+        // vue3 does not need Vue.set anymore
+        Object.keys(r).forEach((k) => { this.r[k] = r[k]; });
         if (r.msg_short === 'RU') {
           requestAnimationFrame(() => setTimeout(this.queryResult, gap + 500));
         }
-      });
+      } else {
+        const r = ret.error[0];
+        this.$set(this.r, 'msg_en', r.name + r.message);
+      }
     },
   },
 };

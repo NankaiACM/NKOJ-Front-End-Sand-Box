@@ -68,7 +68,7 @@ export default class ContestList extends Vue {
           okType: 'danger',
           cancelText: '否',
           onOk: async () => {
-            // 第二次确认，最终确认
+            // 第二次确认, 最终确认
             this.loading = true;
             try {
               await apiContestDelete(record.contest_id);

@@ -1,18 +1,12 @@
-import { createRouter, createWebHistory } from 'vue-router';
-
-// import { objapi } from '@/fetch/main.ts';
-// import backCheck from '@/lib/backcheck';
-// import frontCheck from '@/lib/frontcheck';
-
-// import home from './view/home.vue';
+import { createRouter, createWebHashHistory } from 'vue-router';
+import { apiSelfProfile } from '@/typescript/api';
+import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from './store';
 import register from './nkpc/register.vue';
 import coding from './nkpc/coding.vue';
 import activity from './nkpc/activity.vue';
 
-// Vue.use(Router);
-
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory('/nkpc'),
   routes: [
     {
       path: '/',
@@ -42,22 +36,25 @@ const router = createRouter({
       path: '/activity',
       component: activity,
     },
-    // { // webpackChunk示例
-    //   path: '*',
-    //   name: 'recycler',
-    //   component: () => import(/* webpackChunkName: "recycler" */ '@/view/404.vue'),
-    // },
+    {
+      path: '/:catchAll(.*)',
+      name: 'recycler',
+      component: () => import(/* webpackChunkName: "recycler" */ '@/views/nkpc/nkpc/404.vue'),
+    },
   ],
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (!frontCheck(objapi)) {
-//     backCheck(objapi, (uData) => {
-//       router.app.$options.store.commit('userData', uData);
-//     });
-//     router.app.$options.store.commit('userCheck', true);
-//   }
-//   next();
-// });
+router.beforeEach(async (to, from, next) => {
+  if (!store.state.user.check) {
+    try {
+      const selfProfile = await apiSelfProfile(); // 检查是不是已经持有登录凭据
+      store.commit(SET_USER_DATA_USERINFORMATION, selfProfile); // 更新当前用户信息
+      store.commit(SET_USER_CHECK_BOOLEAN, true); // 更新用户校验状态
+    } catch (e) {
+      console.log('未登录, 强制进行路径导航');
+    }
+  }
+  next();
+});
 
 export default router;

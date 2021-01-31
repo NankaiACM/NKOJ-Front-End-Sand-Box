@@ -1,7 +1,7 @@
 <template lang="pug">
 #register.container.is-fullhd
   user-check
-    template(v-slot:userok) 获取用户信息成功，如果还没有成功注册比赛，请填写下表完成比赛注册。
+    template(v-slot:userok) 获取用户信息成功, 如果还没有成功注册比赛, 请填写下表完成比赛注册.
   .field
     label.label 姓名
     .control
@@ -38,7 +38,7 @@
     label.label 政治面貌
     .control
       .select
-        select
+        select(v-model="political")
           option 群众
           option 共青团员
           option 中共预备党员
@@ -48,6 +48,9 @@
       button.button.is-primary(@click="submit()") 提交
 </template>
 <script lang="js">
+import { fetchBase } from '@/typescript/api';
+import ObjFormatUrl from '@/typescript/objFormatUrl';
+
 export default {
   name: 'nkpcregisterpage',
   data() {
@@ -84,31 +87,31 @@ export default {
   methods: {
     async submit() {
       if (!this.idok || !this.nameok || !this.qqok || !this.phoneok) {
-        this.$message('似乎有什么地方不太对，请检查一下下数据 QwQ');
+        this.$message('似乎有什么地方不太对, 请检查一下下数据 QwQ');
         return;
       }
       try {
-        const res = await this.$http.objpost('contestSign', '', {
-          gender: this.gender,
-          institute: this.college,
-          phone: this.phone,
-          qq: this.qq,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          real_name: this.fullname,
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          student_number: this.studentid,
+        // TODO: move api to api.ts
+        const res = await fetchBase(ObjFormatUrl.contestSign, {
+          method: 'POST',
+          body: JSON.stringify({
+            gender: this.gender,
+            institute: this.college,
+            phone: this.phone,
+            qq: this.qq,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            real_name: this.fullname,
+            // eslint-disable-next-line @typescript-eslint/camelcase
+            student_number: this.studentid,
+          }),
         });
-        this.$message(`注册成功，这是你的注册信息：<br><pre>${JSON.stringify(res, null, 2)}</pre>`);
+        this.$message(`注册成功, 这是你的注册信息：<br><pre>${JSON.stringify(res.data, null, 2)}</pre>`);
       } catch (e) {
         this.$message('注册失败', e);
         /* eslint-disable-next-line */
         console.dir(e);
       }
     },
-  },
-  mounted() {
-    // this.$nextTick(() => {
-    // });
   },
 };
 </script>

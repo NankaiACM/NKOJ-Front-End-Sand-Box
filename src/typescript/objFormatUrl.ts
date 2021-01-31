@@ -77,6 +77,10 @@ const discuss = {
 
 export const API_BASE_URL = '//acm.nankai.edu.cn/api';
 
+export const PUBLIC_BASE_URL = '//acm.nankai.edu.cn/public';
+
+export const STATUS_BASE_URL = '//acm.nankai.edu.cn/status';
+
 const AVATAR_BASE_URL = `${API_BASE_URL}/avatar`; // suffix uid
 
 const CAPTCHA_BASE_URL = `${API_BASE_URL}/captcha/login?_t=`; // suffix Math.random()

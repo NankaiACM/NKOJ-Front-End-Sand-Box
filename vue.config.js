@@ -2,12 +2,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const publicPath = process.env.NODE_ENV === 'production' ? '//acm.nankai.edu.cn/' : '//localhost:8080/';
+const publicPath = process.env.NODE_ENV === 'production' ? '/public' : '/';
 
 module.exports = {
   publicPath, // equ process.env.BASE_URL
   pages: {
-    index: {
+    admin: {
       entry: 'src/views/admin/app.ts',
       template: 'src/views/admin/app.pug',
     },
@@ -27,7 +27,12 @@ module.exports = {
     },
   },
   devServer: {
-    historyApiFallback: true,
+    historyApiFallback: {
+      rewrites: [
+        { from: /\/nkpc/, to: '/nkpc.html' },
+        { from: /\/admin/, to: '/admin.html' },
+      ],
+    },
     https: {
       // ❯ openssl genrsa -out privatekey.pem 1024
       // ❯ openssl req -new -key privatekey.pem -out certrequest.csr
