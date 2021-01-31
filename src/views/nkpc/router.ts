@@ -1,9 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { apiSelfProfile } from '@/typescript/api';
 import store, { SET_USER_CHECK_BOOLEAN, SET_USER_DATA_USERINFORMATION } from './store';
-import register from './nkpc/register.vue';
-import coding from './nkpc/coding.vue';
-import activity from './nkpc/activity.vue';
 
 const router = createRouter({
   history: createWebHashHistory('/nkpc'),
@@ -11,35 +8,35 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: register,
+      component: () => import(/* webpackChunkName: "_nkpc_register" */ '@/views/nkpc/nkpc/register.vue'),
     },
     {
       path: '/register',
-      component: register,
+      component: () => import(/* webpackChunkName: "_nkpc_register" */ '@/views/nkpc/nkpc/register.vue'),
     },
     {
       path: '/coding/:cid/:pid',
-      component: coding,
+      component: () => import(/* webpackChunkName: "_nkpc_coding" */ '@/views/nkpc/nkpc/coding.vue'),
       props: true,
       name: 'coding',
     },
     {
       path: '/coding/:cid',
-      component: coding,
+      component: () => import(/* webpackChunkName: "_nkpc_coding" */ '@/views/nkpc/nkpc/coding.vue'),
       props: true,
     },
     {
       path: '/coding',
-      component: coding,
+      component: () => import(/* webpackChunkName: "_nkpc_coding" */ '@/views/nkpc/nkpc/coding.vue'),
     },
     {
       path: '/activity',
-      component: activity,
+      component: () => import(/* webpackChunkName: "_nkpc_activity" */ '@/views/nkpc/nkpc/activity.vue'),
     },
     {
       path: '/:catchAll(.*)',
       name: 'recycler',
-      component: () => import(/* webpackChunkName: "recycler" */ '@/views/nkpc/nkpc/404.vue'),
+      component: () => import(/* webpackChunkName: "_nkpc_recycler" */ '@/views/nkpc/nkpc/404.vue'),
     },
   ],
 });
