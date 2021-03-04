@@ -37,8 +37,8 @@ module.exports = {
       // ❯ openssl genrsa -out privatekey.pem 1024
       // ❯ openssl req -new -key privatekey.pem -out certrequest.csr
       // ❯ openssl x509 -req -in .\certrequest.csr -signkey .\privatekey.pem -out certificate.pem
-      key: fs.readFileSync(path.join(__dirname, './public/cert/privatekey.pem')),
-      cert: fs.readFileSync(path.join(__dirname, './public/cert/certificate.pem')),
+      // key: fs.readFileSync(path.join(__dirname, './public/cert/privatekey.pem')),
+      // cert: fs.readFileSync(path.join(__dirname, './public/cert/certificate.pem')),
     },
     // proxy: {
     //   '/api': {
