@@ -33,7 +33,7 @@
           option(
             v-for="(it,index,key) in contest.problems",
             :value="it['problem_id']",:key="index",
-            :class="submitted && (~submitted.indexOf(it['problem_id'])) ?\
+            :class="(submitted && submitted.indexOf && (~submitted.indexOf(it['problem_id']))) ?\
               'has-background-warning has-text-grey-dark' : ''"
             ) [{{ getIndex(index) }}] {{key}} {{it['problem_id']}} : {{it.title}}
     .control
@@ -152,7 +152,7 @@ export default {
         }
         // TODO: move api to api.ts
         const submitted = (await fetchBase(format(objFormatUrl.submitted, { cid: this.cid }), { method: 'GET' })).data;
-        this.submitted = submitted | [];
+        this.submitted = submitted || [];
       } catch (e) {
         this.$message('获取比赛信息失败', e);
       }

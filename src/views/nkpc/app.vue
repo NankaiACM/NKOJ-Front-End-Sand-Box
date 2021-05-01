@@ -5,7 +5,7 @@ section#app.hero.is-fullheight(style="filter:blur(0)")
       .container
         .navbar-menu
           a.navbar-item.has-text-black(href="//acm.nankai.edu.cn") 主站
-          router-link.navbar-item.has-text-black(to="/coding/1022/") coding
+          a.navbar-item.has-text-black(to="//acm.nankai.edu.cn/contest") contest
   .hero-body(style="background:rgba(255,255,255,.82);")
     router-view
   message
