@@ -25,8 +25,8 @@ import Component from 'vue-class-component'
 import { apiReportAll, apiReportApprove, apiReportDecline } from '@/typescript/api'
 import { Modal } from 'ant-design-vue'
 import Vue from 'vue'
-import { ReportReturnInterface } from '@/types/interface';
-// import { getWhisperUrl } from '@/typescript/objFormatUrl';
+import { ReportReturnInterface } from '@/types/interface'
+// import { getWhisperUrl } from '@/typescript/objFormatUrl'
 
 enum REPORT_TABLE_SELECT_VALUE {
   NOYET = 'notYet',

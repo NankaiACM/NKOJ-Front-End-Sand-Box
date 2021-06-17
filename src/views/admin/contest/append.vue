@@ -69,6 +69,7 @@ import { apiContestCreate } from '@/typescript/api'
 import markdownIt from '@/typescript/markdown'
 import { ContestRule } from '@/typescript/constant'
 import Vue from 'vue'
+import { ContestCreateRequestInterface } from '@/types/interface'
 
 @Component
 export default class extends Vue {
@@ -84,7 +85,7 @@ export default class extends Vue {
 
   rule = ContestRule.ACM;
 
-  fileList = [] as (Record<string, unknown>)[];
+  fileList = [] as (File)[];
 
   filePlaneText = '';
 
@@ -99,13 +100,12 @@ export default class extends Vue {
       fileReader.onload = () => {
         this.filePlaneText = fileReader.result as string
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      fileReader.readAsText((this.fileList[0] as any).originFileObj)
+      fileReader.readAsText(this.fileList[0])
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  beforeUpload (): boolean {
+  beforeUpload (file: File) {
+    this.fileList = [...this.fileList, file]
     return false
   }
 
@@ -119,8 +119,7 @@ export default class extends Vue {
         end: this.end.format(moment.HTML5_FMT.DATETIME_LOCAL_SECONDS),
         private: Boolean(this.private),
         rule: this.rule,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        file: (this.fileList[0] as any)?.originFileObj,
+        file: this.fileList[0],
         description: this.description
       }
       const ccReturn = await apiContestCreate(ccIn)

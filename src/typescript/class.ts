@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import { ProblemAddOrUpdateRequestInterface, ProblemInformationReturnInterface } from '@/types/interface'
 import { SpecialJudgeNumberRule, SpecialJudgeStringRule } from '@/typescript/constant'
 
 // eslint-disable-next-line import/prefer-default-export

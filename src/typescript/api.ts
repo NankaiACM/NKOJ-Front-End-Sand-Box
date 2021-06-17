@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch'
 import format from 'string-format'
 import { USER_DEBUG_LOG, USER_DEBUG_LOG_TYPE } from '@/components/log/log'
 import objFormatUrl, { API_BASE_URL } from './objFormatUrl'
-import { ErrorInterface } from '@/types/interface'
+import { AdminWhisperRequestInterface, AnnouncementReturnInterface, ApiReturn, ContestAdminDetailReturnInterface, ContestCreateRequestInterface, ContestCreateReturnInterface, ContestDetailReturnInterface, ContestEditSaveRequestInterface, ContestEditSaveReturnInterface, ContestsListContestSimpleEntity, ContestsListReturnInterface, DiscussListPostEntity, DiscussListReturnInterface, ErrorInterface, MessageRequestInterface, ProblemAddOrUpdateRequestInterface, ProblemAddOrUpdateReturnInterface, ProblemInformationReturnInterface, ProblemIODataUpdateRequestInterface, ProblemsListProblemSampleEntity, ProblemsListReturnInterface, ProblemSPJUpdateRequestInterface, RejudgeReturnInterface, ReportReturnInterface, SignInRequestInterface, StatusStreamReturnInterfacee, UserInformationReturnInterface } from '@/types/interface'
 
 /**
  * 对 fetch 的 options 进行了一些默认设置, 对错误处理进行了修改

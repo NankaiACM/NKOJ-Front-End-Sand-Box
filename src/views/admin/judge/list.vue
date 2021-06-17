@@ -6,7 +6,7 @@ div
     @change="change",
     :rowKey="item => item['solution_id'] + item.when",
     :loading="loading")
-    template(#action="{ text, record }")
+    template(slot="action" slot-scope="text, record")
       a-space
         a-button(@click="rejudge(record.solution_id)") 重新评测
         a-button
@@ -18,6 +18,7 @@ import { apiRejudge, apiStatusRangeStream, apiStatusStream } from '@/typescript/
 import { Modal } from 'ant-design-vue'
 import { getDetailUrl } from '@/typescript/objFormatUrl'
 import Vue from 'vue'
+import { StatusStreamReturnInterfacee } from '@/types/interface'
 
 @Component
 export default class extends Vue {
@@ -39,19 +40,19 @@ export default class extends Vue {
   }, {
     title: '运行时间',
     dataIndex: 'time',
-    customRender ({ text }: { text: string }) {
-      return `${text}ms`
+    customRender (text: string) {
+      return `${text} ms`
     }
   }, {
     title: '运行内存',
     dataIndex: 'memory',
-    customRender ({ text }: { text: string}) {
-      return `${text}kB`
+    customRender (text: string) {
+      return `${text} kB`
     }
   }, {
     title: '时间',
     dataIndex: 'when',
-    customRender ({ text }: { text: string }) {
+    customRender (text: string) {
       return new Date(text).toLocaleString()
     }
   }, {
@@ -59,7 +60,7 @@ export default class extends Vue {
     dataIndex: 'problem_id'
   }, {
     title: '可选操作',
-    slots: {
+    scopedSlots: {
       customRender: 'action'
     }
   }];

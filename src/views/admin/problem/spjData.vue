@@ -29,7 +29,7 @@ const SpjDataProps = Vue.extend({
 
 @Component
 export default class extends SpjDataProps {
-  fileList = [];
+  fileList: File[] = [];
 
   langMap = JSON.parse(JSON.stringify(LangMap));
 
@@ -45,15 +45,14 @@ export default class extends SpjDataProps {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  beforeUpload () {
+  beforeUpload (file: File) {
+    this.fileList = [...this.fileList, file]
     return false
   }
 
   async handleUpload () {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await apiProblemSPJUpdate(this.problemId, { lang: Number(this.selectLang), file: (this.fileList[0] as any).originFileObj })
+      await apiProblemSPJUpdate(this.problemId, { lang: Number(this.selectLang), file: this.fileList[0] })
     } catch (e) {
       // do nothing
     }

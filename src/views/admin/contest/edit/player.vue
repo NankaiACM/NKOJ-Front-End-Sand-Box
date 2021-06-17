@@ -19,6 +19,7 @@ import { apiContestUserAdd, apiContestUserRemove, apiUserInformation } from '@/t
 import { getAvatarImageSrc } from '@/typescript/objFormatUrl'
 import Component from 'vue-class-component'
 import Vue from 'vue'
+import { ContestAdminDetailParticipantsEntity } from '@/types/interface'
 
 class CADParticipantsTableEntity implements ContestAdminDetailParticipantsEntity {
   user_id: number;

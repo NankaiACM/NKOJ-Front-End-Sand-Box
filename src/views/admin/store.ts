@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { logStore } from '@/components/log/log'
+import { UserInformationReturnInterface } from '@/types/interface'
 
 export const SET_USER_CHECK_BOOLEAN = 'SET_USER_CHECK_BOOLEAN'
 export const SET_USER_DATA_USERINFORMATION = 'SET_USER_DATA_USERINFORMATION'

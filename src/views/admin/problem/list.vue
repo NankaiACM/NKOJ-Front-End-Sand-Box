@@ -18,6 +18,7 @@ div
 import Component from 'vue-class-component'
 import { apiProblemsListAll } from '@/typescript/api'
 import Vue from 'vue'
+import { ProblemsListProblemSampleEntity } from '@/types/interface'
 
 @Component
 export default class extends Vue {

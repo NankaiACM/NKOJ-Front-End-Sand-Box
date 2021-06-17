@@ -1,5 +1,5 @@
 <template lang="pug">
-a-tabs(v-model:defaultActiveKey="tabName", @change="tabChange")
+a-tabs(v-model:activeKey="activeKey", @change="tabChange")
   a-tab-pane(tab="基础数据", key="basic")
     ProblemEdit(:problemId="problemId", :preProblemData="preProblemData", @problemDataSubmit="problemUpdate")
   a-tab-pane(tab="输入输出数据", key="io")
@@ -45,6 +45,8 @@ const ModifyProps = Vue.extend({
 export default class extends ModifyProps {
   preProblemData = new ProblemEditClass();
 
+  activeKey = ''
+
   tabChange (activeKey: string) {
     this.$router.push({ params: { problemId: String(this.problemId), tabName: activeKey } })
   }
@@ -57,6 +59,7 @@ export default class extends ModifyProps {
 
   async loadData () {
     try {
+      this.activeKey = this.tabName
       const pIRet = await apiProblemInformation(this.problemId)
       this.preProblemData = ProblemEditClass.inputProblemData(pIRet)
     } catch (e) {

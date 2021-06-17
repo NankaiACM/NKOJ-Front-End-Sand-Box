@@ -73,6 +73,7 @@ import markdownIt from '@/typescript/markdown'
 import { ContestRule } from '@/typescript/constant'
 import { Modal } from 'ant-design-vue'
 import Vue from 'vue'
+import { ContestDetailReturnInterface, ContestEditSaveRequestInterface } from '@/types/interface'
 
 class ContestEditData {
   title: string;
@@ -151,7 +152,7 @@ export default class extends BasicProps {
 
   preContestDetail = new ContestEditData();
 
-  fileList = [] as (Record<string, unknown>)[];
+  fileList = [] as (File)[];
 
   onlyOneFile () {
     if (this.fileList.length > 0) {
@@ -160,13 +161,12 @@ export default class extends BasicProps {
       fileReader.onload = () => {
         this.contestDetail.file = fileReader.result as string
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      fileReader.readAsText((this.fileList[0] as any).originFileObj)
+      fileReader.readAsText(this.fileList[0])
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  beforeUpload () {
+  beforeUpload (file: File) {
+    this.fileList = [...this.fileList, file]
     return false
   }
 
@@ -195,8 +195,7 @@ export default class extends BasicProps {
     Modal.confirm({
       title: '确认修改信息',
       onOk: async () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const cESReq = this.contestDetail.toContestEditSaveReqObj((this.fileList[0] as any)?.originFileObj)
+        const cESReq = this.contestDetail.toContestEditSaveReqObj(this.fileList[0])
         try {
           await apiContestEditSave(this.contestId, cESReq)
           await this.loadData()

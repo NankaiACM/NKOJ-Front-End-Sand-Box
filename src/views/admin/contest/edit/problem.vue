@@ -25,6 +25,7 @@ a-transfer(:rowKey="item => item.key",
 import Component from 'vue-class-component'
 import Vue from 'vue'
 import { apiContestProblemAdd, apiContestProblemRemove, apiProblemsListAll } from '@/typescript/api'
+import { ContestAdminDetailProblemEntity, ProblemsListProblemSampleEntity } from '@/types/interface'
 
 interface PLPSTransferEntry extends ProblemsListProblemSampleEntity {
   key: string;

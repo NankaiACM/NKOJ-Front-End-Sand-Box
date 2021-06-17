@@ -25,7 +25,7 @@ const IoDataProps = Vue.extend({
 
 @Component
 export default class extends IoDataProps {
-  fileList = []
+  fileList: File[] = []
 
   handleRemove () {
     this.fileList = []
@@ -37,15 +37,17 @@ export default class extends IoDataProps {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  beforeUpload () {
+  beforeUpload (file: File) {
+    this.fileList = [...this.fileList, file]
     return false
   }
 
   async handleUpload () {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await apiProblemIODataUpdate(this.problemId, { file: (this.fileList[0] as any).originFileObj })
+      // In Vue3
+      // await apiProblemIODataUpdate(this.problemId, { file: (this.fileList[0] as any).originFileObj })
+      // In Vue2
+      await apiProblemIODataUpdate(this.problemId, { file: this.fileList[0] })
     } catch (e) {
       // do nothing
     }

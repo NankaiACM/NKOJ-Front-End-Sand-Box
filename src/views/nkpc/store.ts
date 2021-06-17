@@ -1,3 +1,4 @@
+import { UserInformationReturnInterface } from '@/types/interface'
 import Vue from 'vue'
 import Vuex from 'vuex'
 

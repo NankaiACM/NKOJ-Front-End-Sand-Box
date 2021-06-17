@@ -48,7 +48,7 @@ import {
 import publicKey from '@/typescript/idRsa.pub'
 import forge from 'node-forge'
 import Vue from 'vue'
-import { SignInRequestInterface } from '@/types/interface'
+import { SignInRequestInterface, UserInformationReturnInterface } from '@/types/interface'
 
 @Component
 export default class extends Vue {

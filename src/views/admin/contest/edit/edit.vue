@@ -20,6 +20,7 @@ import BasicManager from './basic.vue'
 import ProblemManager from './problem.vue'
 import PlayerManager from './player.vue'
 import Vue from 'vue'
+import { ContestAdminDetailParticipantsEntity, ContestAdminDetailProblemEntity } from '@/types/interface'
 
 const EditProps = Vue.extend({
   props: {

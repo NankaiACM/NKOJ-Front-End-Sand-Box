@@ -1,6 +1,6 @@
 <template lang="pug">
 a-list(:loading="loading", :dataSource="postsArray", itemLayout="vertical", :grid="{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 2, xl: 2, xxl: 2 }")
-  template(#renderItem="{ item, index }")
+  template(slot="renderItem" slot-scope="item, index")
     a-list-item
       a-card
         a-card-meta(:title="item.title")
@@ -12,7 +12,7 @@ a-list(:loading="loading", :dataSource="postsArray", itemLayout="vertical", :gri
           发布者昵称：{{ item.nickname }}
           发布时间：{{ new Date(item.since).toLocaleString() }}
           最后活跃用户：{{ item.last_active_user }}
-          最后活跃时间：{{ item.last_active_date }}
+          最后活跃时间：{{ new Date(item.last_active_date).toLocaleString() }}
           支持数：{{ item.positive }}
           反对数：{{ item.negative }}
         template(#actions)
@@ -25,6 +25,7 @@ import { apiDiscussListAll, apiPostRecover, apiPostRemove } from '@/typescript/a
 import { getAvatarImageSrc, getDiscussUrl } from '@/typescript/objFormatUrl'
 import Component from 'vue-class-component'
 import Vue from 'vue'
+import { DiscussListPostEntity } from '@/types/interface'
 
 interface PostCard extends DiscussListPostEntity {
   avatarSrc: string;

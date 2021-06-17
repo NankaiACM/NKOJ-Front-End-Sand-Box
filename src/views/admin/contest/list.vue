@@ -28,6 +28,7 @@ import {
   apiContestsListAll,
   apiContestDelete
 } from '@/typescript/api'
+import { ContestsListContestSimpleEntity } from '@/types/interface'
 
 @Component
 export default class ContestList extends Vue {

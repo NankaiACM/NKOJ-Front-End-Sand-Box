@@ -122,8 +122,11 @@ const EditProps = Vue.extend({
 // eslint-disable-next-line no-use-before-define
 @Component<ProblemEdit>({
   watch: {
-    preProblemData () {
-      this.problemData = JSON.parse(JSON.stringify(this.preProblemData))
+    preProblemData: {
+      handler (nv: Record<string, unknown>) {
+        this.problemData = JSON.parse(JSON.stringify(nv))
+      },
+      immediate: true
     }
   }
 })
