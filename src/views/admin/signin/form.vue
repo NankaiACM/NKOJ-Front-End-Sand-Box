@@ -87,7 +87,6 @@ export default class extends Vue {
   async signIn () {
     try {
       const pck: SignInRequestInterface = { ...this.signInPackage }
-      console.log(pck)
       pck.password = forge.util.encode64(forge.pki.publicKeyFromPem(publicKey).encrypt(pck.password)) // 公钥加密
       const selfProfile = await apiSignIn(pck)
       store.commit(SET_USER_DATA_USERINFORMATION, selfProfile) // 更新当前用户信息

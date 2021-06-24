@@ -51,7 +51,6 @@ export default class extends Vue {
       this.listLoading = true
       try {
         this.announceArray = await apiMessageAnnouncement()
-        console.log(this.announceArray)
       } catch (e) {
         // do nothing
       }

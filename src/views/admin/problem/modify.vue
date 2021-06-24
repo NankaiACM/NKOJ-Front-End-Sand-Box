@@ -68,8 +68,6 @@ export default class extends ModifyProps {
   }
 
   problemUpdate (afterProblemData: ProblemEditClass) {
-    console.log(this.preProblemData)
-    console.log(afterProblemData)
     const oldStr = JSON.stringify(this.preProblemData, null, 2)
     const newStr = JSON.stringify(afterProblemData, null, 2)
     const diffString = createTwoFilesPatch('file', 'file', oldStr, newStr, undefined, undefined, { context: Math.max(oldStr.split('\n').length, newStr.split('\n').length) })

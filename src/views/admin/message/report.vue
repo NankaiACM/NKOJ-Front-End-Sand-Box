@@ -104,7 +104,6 @@ export default class extends Vue {
 
   // eslint-disable-next-line class-methods-use-this
   select (report_id: number, value: string, record: ReportTableEntiry) {
-    console.log(value)
     if (value === REPORT_TABLE_SELECT_VALUE.ACCEPTED) {
       Modal.confirm({
         title: `处理举报 ${report_id}`,

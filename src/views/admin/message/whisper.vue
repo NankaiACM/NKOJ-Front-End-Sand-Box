@@ -65,9 +65,7 @@ export default class extends Vue {
   }
 
   get avatarSrc () : string {
-    console.log(this.whisperPackage.uid)
     const ret = getAvatarImageSrc(this.whisperPackage.uid)
-    console.log(ret)
     return ret
   }
 }

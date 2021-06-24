@@ -114,7 +114,8 @@ const EditProps = Vue.extend({
     },
     preProblemData: {
       type: Object,
-      required: false
+      required: false,
+      default: () => { return new ProblemEditClass() }
     }
   }
 })
@@ -124,7 +125,11 @@ const EditProps = Vue.extend({
   watch: {
     preProblemData: {
       handler (nv: Record<string, unknown>) {
-        this.problemData = JSON.parse(JSON.stringify(nv))
+        try {
+          this.problemData = JSON.parse(JSON.stringify(nv))
+        } catch (err) {
+          console.log(err)
+        }
       },
       immediate: true
     }
