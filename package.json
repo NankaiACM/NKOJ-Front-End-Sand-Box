@@ -23,7 +23,7 @@
     "markdown-it-latex": "^0.2.0",
     "markdown-it-mathjax": "^2.0.0",
     "moment": "^2.29.1",
-    "node-forge": "^0.10.0",
+    "node-forge": "^1.0.0",
     "register-service-worker": "^1.7.1",
     "string-format": "^2.0.0",
     "velocity-animate": "^1.5.2",
